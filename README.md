@@ -6,7 +6,7 @@ A project to test out Jetpack Compose. This app pulls out conferences date from
 ### Objectives for this project
 - Build a multi screen UI with Compose.
 - Understand how state management will work with Compose
-- Make app reactive to changes from network + DB as well as a implement a simple UI filter
+- Make app reactive to changes from network + DB as well as implement a simple UI filter
 - Make it work with Flow/coroutines
 - Keep it updated with `dev` releases of Compose
 
