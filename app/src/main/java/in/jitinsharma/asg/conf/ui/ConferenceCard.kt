@@ -98,7 +98,7 @@ fun ConferenceCard(
 
             if(showCfp(conferenceData.cfpData)) {
                 val cfpData = conferenceData.cfpData!!
-                Clickable(onClick = { onCfpClicked?.invoke(cfpData.cfpUrl) }) {
+                Clickable(modifier = Modifier.ripple(), onClick = { onCfpClicked?.invoke(cfpData.cfpUrl) }) {
                     Text(
                         text = AnnotatedString {
                             append("CFP closes on ")

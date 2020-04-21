@@ -62,7 +62,7 @@ class ConferenceRepository {
                     }
                     this.cfpData = cfpData
                 }
-                line.contains("label-danger") && !line.contains("online") -> {
+                line.contains("label-danger") && !line.contains("online", ignoreCase = true) -> {
                     this.isActive = false
                 }
             }
