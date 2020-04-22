@@ -8,17 +8,20 @@ import java.util.regex.Pattern
 
 class ConferenceRepository {
 
-    //TODO Add error handling
     suspend fun getConferenceData(): List<ConferenceData> {
-        val document = getHTMLData()
-        val conferenceListElement = document.getElementsByClass("conference-list list-unstyled")[0]
-        return conferenceListElement
-            .childNodes()
-            .filterNot { conferenceElement ->
-                (conferenceElement is TextNode) && conferenceElement.isBlank
-            }.mapTo(ArrayList()) {
-                it.mapToConferenceDataModel()
-            }
+        return try {
+            val document = getHTMLData()
+            val conferenceListElement = document.getElementsByClass("conference-list list-unstyled")[0]
+            conferenceListElement
+                .childNodes()
+                .filterNot { conferenceElement ->
+                    (conferenceElement is TextNode) && conferenceElement.isBlank
+                }.mapTo(ArrayList()) {
+                    it.mapToConferenceDataModel()
+                }
+        } catch (e: Exception) {
+            emptyList()
+        }
     }
 
     private fun Node.mapToConferenceDataModel(): ConferenceData {

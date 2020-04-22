@@ -1,6 +1,7 @@
 package `in`.jitinsharma.asg.conf.ui
 
 import `in`.jitinsharma.asg.conf.viewmodel.ConferenceViewModel
+import `in`.jitinsharma.asg.conf.viewmodel.ErrorState
 import `in`.jitinsharma.asg.conf.viewmodel.LoadingState
 import `in`.jitinsharma.asg.conf.viewmodel.SuccessState
 import android.content.Intent
@@ -27,8 +28,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        conferenceViewModel.loadConferenceList()
         setContent {
-            val conferenceDataListState = conferenceViewModel.getConferenceList().observeAsState()
+            val conferenceDataListState = conferenceViewModel.conferenceListLiveData.observeAsState()
             // TODO Create custom theme
             MaterialTheme {
                 Surface(color = Color(0xFF092432)) {
@@ -45,6 +47,15 @@ class MainActivity : AppCompatActivity() {
                                     conferenceDataList = state.conferenceDataList,
                                     onTitleClicked = { url -> loadUrl(url = url) },
                                     onCfpClicked = { url -> loadUrl(url = url) }
+                                )
+                            }
+                            is ErrorState -> {
+                                WtfView(
+                                    onRetryClick = {
+                                        // This would cause recomposition through
+                                        // conferenceDataListState. Nice!
+                                        conferenceViewModel.loadConferenceList()
+                                    }
                                 )
                             }
                         }

@@ -1,6 +1,6 @@
 # asg-conf
 
-A project to test out Jetpack Compose. This app pulls out conferences date from 
+A project to test out Jetpack Compose. This app pulls out conferences data from 
 [this](http://androidstudygroup.github.io/conferences/) website and displays as a list.
 
 ### Objectives for this project
