@@ -1,6 +1,7 @@
 package `in`.jitinsharma.asg.conf.ui
 
 import `in`.jitinsharma.asg.conf.R
+import `in`.jitinsharma.asg.conf.utils.ThemedPreview
 import androidx.compose.Composable
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Clickable
@@ -11,6 +12,7 @@ import androidx.ui.layout.fillMaxWidth
 import androidx.ui.layout.padding
 import androidx.ui.material.ripple.ripple
 import androidx.ui.res.vectorResource
+import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 
 @Composable
@@ -37,5 +39,13 @@ fun Header(modifier: Modifier = Modifier) {
                 )
             )
         }
+    }
+}
+
+@Preview
+@Composable
+fun HeaderPreview() {
+    ThemedPreview {
+        Header()
     }
 }

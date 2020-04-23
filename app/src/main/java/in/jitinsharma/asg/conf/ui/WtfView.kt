@@ -1,5 +1,6 @@
 package `in`.jitinsharma.asg.conf.ui
 
+import `in`.jitinsharma.asg.conf.utils.ThemedPreview
 import androidx.compose.Composable
 import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
@@ -10,9 +11,11 @@ import androidx.ui.layout.Column
 import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.padding
 import androidx.ui.material.Button
+import androidx.ui.material.MaterialTheme
 import androidx.ui.text.AnnotatedString
 import androidx.ui.text.SpanStyle
 import androidx.ui.text.TextStyle
+import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.TextUnit
 import androidx.ui.unit.dp
 
@@ -35,17 +38,25 @@ fun WtfView(
                 append("}")
                 pop()
             },
-            color = Color(0xFF3DDB85),
+            color = MaterialTheme.colors.secondary,
             style = TextStyle(fontSize = TextUnit.Sp(32))
         )
         Button(
             modifier = Modifier.padding(top = 8.dp),
-            backgroundColor = Color(0xFF3DDB85),
+            backgroundColor = MaterialTheme.colors.secondary,
             onClick = { onRetryClick() }) {
             Text(
                 text = "Retry",
-                color = Color(0xFF092432)
+                color = MaterialTheme.colors.primary
             )
         }
+    }
+}
+
+@Preview
+@Composable
+fun WtfViewPreview() {
+    ThemedPreview {
+        WtfView(onRetryClick = {})
     }
 }

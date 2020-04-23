@@ -1,5 +1,6 @@
 package `in`.jitinsharma.asg.conf.ui
 
+import `in`.jitinsharma.asg.conf.utils.ThemedPreview
 import androidx.compose.Composable
 import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
@@ -19,7 +20,7 @@ fun LoadingView() {
         horizontalGravity = Alignment.CenterHorizontally
     ) {
         CircularProgressIndicator(
-            color = Color(0xFF3DDB85)
+            color = MaterialTheme.colors.secondary
         )
     }
 }
@@ -27,7 +28,7 @@ fun LoadingView() {
 @Preview
 @Composable
 fun LoadingViewPreview() {
-    MaterialTheme {
+    ThemedPreview {
         LoadingView()
     }
 }

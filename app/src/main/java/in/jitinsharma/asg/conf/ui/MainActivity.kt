@@ -31,9 +31,10 @@ class MainActivity : AppCompatActivity() {
         conferenceViewModel.loadConferenceList()
         setContent {
             val conferenceDataListState = conferenceViewModel.conferenceListLiveData.observeAsState()
-            // TODO Create custom theme
-            MaterialTheme {
-                Surface(color = Color(0xFF092432)) {
+            MaterialTheme(
+                colors = themeColors
+            ) {
+                Surface(color = MaterialTheme.colors.primary) {
                     Column(
                         modifier = Modifier.fillMaxWidth() + Modifier.padding(16.dp)
                     ) {

@@ -2,6 +2,7 @@ package `in`.jitinsharma.asg.conf.ui
 
 import `in`.jitinsharma.asg.conf.R
 import `in`.jitinsharma.asg.conf.model.ConferenceData
+import `in`.jitinsharma.asg.conf.utils.ThemedPreview
 import androidx.compose.Composable
 import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
@@ -36,11 +37,11 @@ fun ConferenceCard(
     Card(
         shape = RoundedCornerShape(8.dp),
         color = if (conferenceData.isActive) {
-            Color(0xFF3DDB85)
+            MaterialTheme.colors.secondary
         } else {
             Color(0x4D3DDB85)
         },
-        contentColor = Color(0xFF092432),
+        contentColor = MaterialTheme.colors.primary,
         modifier = modifier.wrapContentHeight(align = Alignment.CenterVertically)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -133,7 +134,7 @@ private fun showCfp(cfpData: ConferenceData.CfpData?): Boolean{
 @Preview
 @Composable
 fun ConferenceCardPreview() {
-    MaterialTheme {
+    ThemedPreview {
         ConferenceCard(
             conferenceData = ConferenceData(
                 name = "Droidcon",
