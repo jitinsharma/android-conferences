@@ -9,9 +9,7 @@ import androidx.ui.unit.dp
 
 @Composable
 fun ConferenceCardList(
-    conferenceDataList: List<ConferenceData>,
-    onTitleClicked: (url: String) -> Unit,
-    onCfpClicked: ((url: String) -> Unit)? = null
+    conferenceDataList: List<ConferenceData>
 ) {
     AdapterList(data = conferenceDataList) {
         val index = conferenceDataList.indexOf(it)
@@ -21,13 +19,7 @@ fun ConferenceCardList(
             } else {
                 Modifier.padding(top = 32.dp)
             },
-            conferenceData = it,
-            onTitleClicked = { url ->
-                onTitleClicked(url)
-            },
-            onCfpClicked = { url ->
-                onCfpClicked?.invoke(url)
-            }
+            conferenceData = it
         )
     }
 }

@@ -3,8 +3,12 @@ package `in`.jitinsharma.asg.conf.ui
 import `in`.jitinsharma.asg.conf.R
 import `in`.jitinsharma.asg.conf.model.ConferenceData
 import `in`.jitinsharma.asg.conf.utils.ThemedPreview
+import android.content.Context
+import android.content.Intent
 import androidx.compose.Composable
+import androidx.core.net.toUri
 import androidx.ui.core.Alignment
+import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Clickable
 import androidx.ui.foundation.Icon
@@ -30,9 +34,7 @@ import java.util.*
 @Composable
 fun ConferenceCard(
     modifier: Modifier = Modifier,
-    conferenceData: ConferenceData,
-    onTitleClicked: (url: String) -> Unit,
-    onCfpClicked: ((url: String) -> Unit)? = null
+    conferenceData: ConferenceData
 ) {
     Card(
         shape = RoundedCornerShape(8.dp),
@@ -44,13 +46,14 @@ fun ConferenceCard(
         contentColor = MaterialTheme.colors.primary,
         modifier = modifier.wrapContentHeight(align = Alignment.CenterVertically)
     ) {
+        val context = ContextAmbient.current
         Column(modifier = Modifier.padding(16.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Clickable(
-                    onClick = { onTitleClicked(conferenceData.url) },
+                    onClick = { context.loadUrl(conferenceData.url) },
                     modifier = Modifier.ripple()
                 ) {
                     Text(
@@ -99,7 +102,7 @@ fun ConferenceCard(
 
             if(showCfp(conferenceData.cfpData)) {
                 val cfpData = conferenceData.cfpData!!
-                Clickable(modifier = Modifier.ripple(), onClick = { onCfpClicked?.invoke(cfpData.cfpUrl) }) {
+                Clickable(modifier = Modifier.ripple(), onClick = { context.loadUrl(cfpData.cfpUrl) }) {
                     Text(
                         text = AnnotatedString {
                             append("CFP closes on ")
@@ -131,6 +134,10 @@ private fun showCfp(cfpData: ConferenceData.CfpData?): Boolean{
     } ?: return false
 }
 
+private fun Context.loadUrl(url: String) {
+    startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
+}
+
 @Preview
 @Composable
 fun ConferenceCardPreview() {
@@ -145,8 +152,7 @@ fun ConferenceCardPreview() {
                 cfpData = ConferenceData.CfpData(
                     cfpDate = "2020-06-30"
                 )
-            ),
-            onTitleClicked = {}
+            )
         )
     }
 }

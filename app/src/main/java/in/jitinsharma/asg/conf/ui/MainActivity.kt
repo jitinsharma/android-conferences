@@ -4,11 +4,9 @@ import `in`.jitinsharma.asg.conf.viewmodel.ConferenceViewModel
 import `in`.jitinsharma.asg.conf.viewmodel.ErrorState
 import `in`.jitinsharma.asg.conf.viewmodel.LoadingState
 import `in`.jitinsharma.asg.conf.viewmodel.SuccessState
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toUri
 import androidx.ui.animation.Crossfade
 import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Modifier
@@ -31,7 +29,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         conferenceViewModel.loadConferenceList()
         setContent {
-            val conferenceDataListState = conferenceViewModel.conferenceListLiveData.observeAsState()
+            val conferenceDataListState =
+                conferenceViewModel.conferenceListLiveData.observeAsState()
             MaterialTheme(
                 colors = themeColors
             ) {
@@ -48,9 +47,7 @@ class MainActivity : AppCompatActivity() {
                                 }
                                 is SuccessState -> {
                                     ConferenceCardList(
-                                        conferenceDataList = state.conferenceDataList,
-                                        onTitleClicked = { url -> loadUrl(url = url) },
-                                        onCfpClicked = { url -> loadUrl(url = url) }
+                                        conferenceDataList = state.conferenceDataList
                                     )
                                 }
                                 is ErrorState -> {
@@ -68,9 +65,5 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-    private fun loadUrl(url: String) {
-        startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
     }
 }
