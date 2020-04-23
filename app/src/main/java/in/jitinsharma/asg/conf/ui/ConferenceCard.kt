@@ -69,9 +69,7 @@ fun ConferenceCard(
                 Row {
                     Icon(
                         modifier = Modifier.padding(end = 4.dp),
-                        asset = vectorResource(
-                            id = R.drawable.ic_baseline_calendar_today
-                        )
+                        asset = vectorResource(id = R.drawable.ic_baseline_calendar_today)
                     )
                     Text(
                         text = conferenceData.date,
@@ -93,16 +91,17 @@ fun ConferenceCard(
 
                 Text(
                     text = "${conferenceData.city}, ${conferenceData.country}",
-                    style = TextStyle(
-                        fontSize = TextUnit.Sp(12)
-                    ),
+                    style = TextStyle(fontSize = TextUnit.Sp(12)),
                     modifier = Modifier.padding(top = 2.dp)
                 )
             }
 
-            if(showCfp(conferenceData.cfpData)) {
+            if (showCfp(conferenceData.cfpData)) {
                 val cfpData = conferenceData.cfpData!!
-                Clickable(modifier = Modifier.ripple(), onClick = { context.loadUrl(cfpData.cfpUrl) }) {
+                Clickable(
+                    modifier = Modifier.ripple(),
+                    onClick = { context.loadUrl(cfpData.cfpUrl) }
+                ) {
                     Text(
                         text = AnnotatedString {
                             append("CFP closes on ")
@@ -114,9 +113,7 @@ fun ConferenceCard(
                             )
                             append(cfpData.cfpDate)
                         },
-                        style = TextStyle(
-                            fontSize = TextUnit.Sp(12)
-                        ),
+                        style = TextStyle(fontSize = TextUnit.Sp(12)),
                         modifier = Modifier.padding(top = 16.dp)
                     )
                 }
@@ -126,7 +123,7 @@ fun ConferenceCard(
 }
 
 
-private fun showCfp(cfpData: ConferenceData.CfpData?): Boolean{
+private fun showCfp(cfpData: ConferenceData.CfpData?): Boolean {
     cfpData?.let {
         val currentDate = Date(System.currentTimeMillis())
         val cfpDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(cfpData.cfpDate)

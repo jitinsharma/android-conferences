@@ -8,7 +8,6 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.ui.animation.Crossfade
-import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Modifier
 import androidx.ui.core.setContent
 import androidx.ui.layout.Column
@@ -31,32 +30,21 @@ class MainActivity : AppCompatActivity() {
         setContent {
             val conferenceDataListState =
                 conferenceViewModel.conferenceListLiveData.observeAsState()
-            MaterialTheme(
-                colors = themeColors
-            ) {
+            MaterialTheme(colors = themeColors) {
                 Surface(color = MaterialTheme.colors.primary) {
-                    Column(
-                        modifier = Modifier.fillMaxWidth() + Modifier.padding(16.dp)
-                    ) {
+                    Column(modifier = Modifier.fillMaxWidth() + Modifier.padding(16.dp)) {
                         Header(modifier = Modifier.padding(bottom = 16.dp))
                         Crossfade(current = conferenceDataListState.value) { state ->
-                            ContextAmbient
                             when (state) {
                                 is LoadingState -> {
                                     LoadingView()
                                 }
                                 is SuccessState -> {
-                                    ConferenceCardList(
-                                        conferenceDataList = state.conferenceDataList
-                                    )
+                                    ConferenceCardList(conferenceDataList = state.conferenceDataList)
                                 }
                                 is ErrorState -> {
                                     WtfView(
-                                        onRetryClick = {
-                                            // This would cause recomposition through
-                                            // conferenceDataListState. Nice!
-                                            conferenceViewModel.loadConferenceList()
-                                        }
+                                        onRetryClick = { conferenceViewModel.loadConferenceList() }
                                     )
                                 }
                             }
@@ -67,3 +55,4 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
+

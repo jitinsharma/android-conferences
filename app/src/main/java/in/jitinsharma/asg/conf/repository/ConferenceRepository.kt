@@ -4,7 +4,10 @@ import `in`.jitinsharma.asg.conf.model.ConferenceData
 import `in`.jitinsharma.asg.conf.network.getHTMLData
 import org.jsoup.nodes.Node
 import org.jsoup.nodes.TextNode
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.regex.Pattern
+import kotlin.collections.ArrayList
 
 class ConferenceRepository {
 
@@ -18,6 +21,8 @@ class ConferenceRepository {
                     (conferenceElement is TextNode) && conferenceElement.isBlank
                 }.mapTo(ArrayList()) {
                     it.mapToConferenceDataModel()
+                }.filterNot { conferenceData ->
+                    conferenceData.isPast
                 }
         } catch (e: Exception) {
             emptyList()
@@ -27,6 +32,7 @@ class ConferenceRepository {
     private fun Node.mapToConferenceDataModel(): ConferenceData {
         val conferenceDataModel = ConferenceData()
         conferenceDataModel.date = childNode(0).toString().replace("&nbsp; ", "").trim()
+        conferenceDataModel.isPast = isPast(conferenceDataModel.date)
         conferenceDataModel.name = childNode(1).childNode(0).toString().trim()
         conferenceDataModel.url = childNode(1).attr("href")
         val location = childNode(3).childNode(0).toString()
@@ -41,6 +47,12 @@ class ConferenceRepository {
         }.trim()
         conferenceDataModel.parseCfpAndStatusData(childNode(5).toString())
         return conferenceDataModel
+    }
+
+    private fun isPast(date: String): Boolean {
+        val currentDate = Date(System.currentTimeMillis())
+        val conferenceDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(date)
+        return requireNotNull(conferenceDate) < currentDate
     }
 
     private fun ConferenceData.parseCfpAndStatusData(data: String) {

@@ -7,6 +7,7 @@ data class ConferenceData(
     var url: String = "https://www.droidcon.com/",
     var date: String = "",
     var status: String = "Active",
+    var isPast: Boolean = false,
     var isActive: Boolean = true,
     var cfpData: CfpData? = null
 ) {
