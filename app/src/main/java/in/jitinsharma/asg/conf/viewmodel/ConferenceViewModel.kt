@@ -21,6 +21,7 @@ class ConferenceViewModel : ViewModel() {
             conferenceListLiveData.postValue(LoadingState)
             var conferenceDataList: List<ConferenceData> = emptyList()
             withContext(Dispatchers.IO) {
+                //TODO Filter out past conferences?
                 conferenceDataList = conferenceRepository.getConferenceData()
             }
             if (conferenceDataList.isNotEmpty()) {
@@ -37,7 +38,6 @@ class ConferenceViewModel : ViewModel() {
         emit(LoadingState)
         try {
             val conferenceDataList = conferenceRepository.getConferenceData()
-            //TODO Filter out past conferences?
             emit(SuccessState(conferenceDataList))
         } catch (e: Exception) {
             emit(ErrorState)

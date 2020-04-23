@@ -9,9 +9,10 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import androidx.ui.animation.Crossfade
+import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Modifier
 import androidx.ui.core.setContent
-import androidx.ui.graphics.Color
 import androidx.ui.layout.Column
 import androidx.ui.layout.fillMaxWidth
 import androidx.ui.layout.padding
@@ -39,25 +40,28 @@ class MainActivity : AppCompatActivity() {
                         modifier = Modifier.fillMaxWidth() + Modifier.padding(16.dp)
                     ) {
                         Header(modifier = Modifier.padding(bottom = 16.dp))
-                        when (val state = conferenceDataListState.value) {
-                            is LoadingState -> {
-                                LoadingView()
-                            }
-                            is SuccessState -> {
-                                ConferenceCardList(
-                                    conferenceDataList = state.conferenceDataList,
-                                    onTitleClicked = { url -> loadUrl(url = url) },
-                                    onCfpClicked = { url -> loadUrl(url = url) }
-                                )
-                            }
-                            is ErrorState -> {
-                                WtfView(
-                                    onRetryClick = {
-                                        // This would cause recomposition through
-                                        // conferenceDataListState. Nice!
-                                        conferenceViewModel.loadConferenceList()
-                                    }
-                                )
+                        Crossfade(current = conferenceDataListState.value) { state ->
+                            ContextAmbient
+                            when (state) {
+                                is LoadingState -> {
+                                    LoadingView()
+                                }
+                                is SuccessState -> {
+                                    ConferenceCardList(
+                                        conferenceDataList = state.conferenceDataList,
+                                        onTitleClicked = { url -> loadUrl(url = url) },
+                                        onCfpClicked = { url -> loadUrl(url = url) }
+                                    )
+                                }
+                                is ErrorState -> {
+                                    WtfView(
+                                        onRetryClick = {
+                                            // This would cause recomposition through
+                                            // conferenceDataListState. Nice!
+                                            conferenceViewModel.loadConferenceList()
+                                        }
+                                    )
+                                }
                             }
                         }
                     }
