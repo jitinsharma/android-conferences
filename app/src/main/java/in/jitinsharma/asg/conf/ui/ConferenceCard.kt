@@ -47,7 +47,7 @@ fun ConferenceCard(
         modifier = modifier.wrapContentHeight(align = Alignment.CenterVertically)
     ) {
         val context = ContextAmbient.current
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(all = 16.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween

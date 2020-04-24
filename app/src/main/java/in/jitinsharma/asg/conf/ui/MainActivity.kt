@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
                 conferenceViewModel.conferenceListLiveData.observeAsState()
             MaterialTheme(colors = themeColors) {
                 Surface(color = MaterialTheme.colors.primary) {
-                    Column(modifier = Modifier.fillMaxWidth() + Modifier.padding(16.dp)) {
+                    Column(modifier = Modifier.fillMaxWidth().padding(all = 16.dp)) {
                         Header(modifier = Modifier.padding(bottom = 16.dp))
                         Crossfade(current = conferenceDataListState.value) { state ->
                             when (state) {
