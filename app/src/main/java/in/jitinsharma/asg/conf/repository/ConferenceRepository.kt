@@ -32,7 +32,7 @@ class ConferenceRepository {
     private fun Node.mapToConferenceDataModel(): ConferenceData {
         val conferenceDataModel = ConferenceData()
         conferenceDataModel.date = childNode(0).toString().replace("&nbsp; ", "").trim()
-        conferenceDataModel.isPast = isPast(conferenceDataModel.date)
+        conferenceDataModel.isPast = isPastDate(conferenceDataModel.date)
         conferenceDataModel.name = childNode(1).childNode(0).toString().trim()
         conferenceDataModel.url = childNode(1).attr("href")
         val location = childNode(3).childNode(0).toString()
@@ -49,19 +49,14 @@ class ConferenceRepository {
         return conferenceDataModel
     }
 
-    private fun isPast(date: String): Boolean {
-        val currentDate = Date(System.currentTimeMillis())
-        val conferenceDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(date)
-        return requireNotNull(conferenceDate) < currentDate
-    }
-
     private fun ConferenceData.parseCfpAndStatusData(data: String) {
         data.lines().forEach { line ->
             when {
                 line.contains("Call For Papers") -> {
                     val cfpData = ConferenceData.CfpData()
                     //TODO Try replacing matchers by parsing line with Jsoup
-                    val cfpUrlMatcher = Pattern.compile("a href=(.*?)>", Pattern.DOTALL).matcher(line)
+                    val cfpUrlMatcher =
+                        Pattern.compile("a href=(.*?)>", Pattern.DOTALL).matcher(line)
                     val cfpDateMatcher = Pattern.compile(">(.*?)<", Pattern.DOTALL).matcher(line)
                     while (cfpUrlMatcher.find()) {
                         val match = cfpUrlMatcher.group(1)
@@ -73,6 +68,7 @@ class ConferenceRepository {
                         val match = cfpDateMatcher.group(1)
                         if (!match.isNullOrBlank()) {
                             cfpData.cfpDate = match.replace("[^\\d-]".toRegex(), "")
+                            cfpData.isCfpActive = isPastDate(cfpData.cfpDate).not()
                         }
                     }
                     this.cfpData = cfpData
@@ -82,5 +78,11 @@ class ConferenceRepository {
                 }
             }
         }
+    }
+
+    private fun isPastDate(date: String): Boolean {
+        val currentDate = Date(System.currentTimeMillis())
+        val conferenceDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(date)
+        return requireNotNull(conferenceDate) < currentDate
     }
 }

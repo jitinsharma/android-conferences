@@ -16,9 +16,12 @@ import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 
 @Composable
-fun Header(modifier: Modifier = Modifier) {
+fun Header(
+    modifier: Modifier = Modifier,
+    onFilterIconClick: () -> Unit
+) {
     Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        Clickable(onClick = {}, modifier = Modifier.ripple()) {
+        Clickable(onClick = { onFilterIconClick() }, modifier = Modifier.ripple()) {
             Image(
                 modifier = Modifier.padding(top = 12.dp),
                 asset = vectorResource(
@@ -46,6 +49,8 @@ fun Header(modifier: Modifier = Modifier) {
 @Composable
 fun HeaderPreview() {
     ThemedPreview {
-        Header()
+        Header(
+            onFilterIconClick = {}
+        )
     }
 }

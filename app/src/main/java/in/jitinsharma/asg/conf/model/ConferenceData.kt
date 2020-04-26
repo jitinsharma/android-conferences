@@ -13,6 +13,7 @@ data class ConferenceData(
 ) {
     data class CfpData(
         var cfpDate: String = "",
-        var cfpUrl: String = ""
+        var cfpUrl: String = "",
+        var isCfpActive: Boolean = true
     )
 }
