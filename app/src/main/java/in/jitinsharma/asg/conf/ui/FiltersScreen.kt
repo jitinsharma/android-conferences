@@ -2,10 +2,8 @@ package `in`.jitinsharma.asg.conf.ui
 
 import `in`.jitinsharma.asg.conf.model.CfpOpenFilter
 import `in`.jitinsharma.asg.conf.model.ConferenceFilter
-import `in`.jitinsharma.asg.conf.viewmodel.ConferenceViewModel
 import androidx.compose.Composable
 import androidx.compose.Model
-import androidx.compose.state
 import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Clickable
