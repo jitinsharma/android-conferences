@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/asg-conf.iml" filepath="$PROJECT_DIR$/.idea/modules/asg-conf.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/asg-conf.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/asg-conf.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/android-conferences.iml" filepath="$PROJECT_DIR$/.idea/modules/android-conferences.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/android-conferences.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/android-conferences.app.iml" />
     </modules>
   </component>
 </project>
