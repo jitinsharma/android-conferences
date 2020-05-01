@@ -1,5 +1,6 @@
 package `in`.jitinsharma.asg.conf.repository
 
+import `in`.jitinsharma.asg.conf.database.AppDatabase
 import `in`.jitinsharma.asg.conf.model.ConferenceData
 import `in`.jitinsharma.asg.conf.network.getHTMLData
 import org.jsoup.nodes.Node
@@ -9,13 +10,16 @@ import java.util.*
 import java.util.regex.Pattern
 import kotlin.collections.ArrayList
 
-class ConferenceRepository {
+class ConferenceRepository(
+    private val appDatabase: AppDatabase
+) {
 
-    suspend fun getConferenceData(): List<ConferenceData> {
-        return try {
+    suspend fun loadConferenceData() {
+        try {
             val document = getHTMLData()
-            val conferenceListElement = document.getElementsByClass("conference-list list-unstyled")[0]
-            conferenceListElement
+            val conferenceListElement =
+                document.getElementsByClass("conference-list list-unstyled")[0]
+            val conferenceDataList = conferenceListElement
                 .childNodes()
                 .filterNot { conferenceElement ->
                     (conferenceElement is TextNode) && conferenceElement.isBlank
@@ -24,10 +28,14 @@ class ConferenceRepository {
                 }.filterNot { conferenceData ->
                     conferenceData.isPast
                 }
+            addConferenceDataToDB(conferenceDataList)
         } catch (e: Exception) {
-            emptyList()
+            println(e)
         }
     }
+
+    suspend fun getConferenceDataList(): List<ConferenceData> =
+        appDatabase.conferenceDataDao().getConferenceDataList()
 
     private fun Node.mapToConferenceDataModel(): ConferenceData {
         val conferenceDataModel = ConferenceData()
@@ -45,6 +53,7 @@ class ConferenceRepository {
                 joinToString()
             }
         }.trim()
+        conferenceDataModel.id = conferenceDataModel.name + conferenceDataModel.city
         conferenceDataModel.parseCfpAndStatusData(childNode(5).toString())
         return conferenceDataModel
     }
@@ -84,5 +93,12 @@ class ConferenceRepository {
         val currentDate = Date(System.currentTimeMillis())
         val conferenceDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(date)
         return requireNotNull(conferenceDate) < currentDate
+    }
+
+    private suspend fun addConferenceDataToDB(conferenceDataList: List<ConferenceData>) {
+        appDatabase.conferenceDataDao().run {
+            deleteAllConferenceData()
+            storeConferenceData(*conferenceDataList.toTypedArray())
+        }
     }
 }

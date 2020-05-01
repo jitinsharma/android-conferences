@@ -2,9 +2,9 @@ package `in`.jitinsharma.asg.conf.utils
 
 import `in`.jitinsharma.asg.conf.ui.themeColors
 import androidx.compose.Composable
+import androidx.ui.foundation.Box
 import androidx.ui.material.ColorPalette
 import androidx.ui.material.MaterialTheme
-import androidx.ui.material.Surface
 
 @Composable
 internal fun ThemedPreview(
@@ -12,7 +12,7 @@ internal fun ThemedPreview(
     children: @Composable() () -> Unit
 ) {
     MaterialTheme(colors = colors) {
-        Surface {
+        Box(backgroundColor = MaterialTheme.colors.primary) {
             children()
         }
     }

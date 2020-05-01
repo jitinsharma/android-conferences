@@ -1,9 +1,8 @@
 package `in`.jitinsharma.asg.conf.ui
 
-import `in`.jitinsharma.asg.conf.viewmodel.ConferenceViewModel
-import `in`.jitinsharma.asg.conf.viewmodel.ErrorState
-import `in`.jitinsharma.asg.conf.viewmodel.LoadingState
-import `in`.jitinsharma.asg.conf.viewmodel.SuccessState
+import `in`.jitinsharma.asg.conf.database.AppDatabase
+import `in`.jitinsharma.asg.conf.repository.ConferenceRepository
+import `in`.jitinsharma.asg.conf.viewmodel.*
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -23,7 +22,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalCoroutinesApi
 class MainActivity : AppCompatActivity() {
 
-    private val conferenceViewModel: ConferenceViewModel by viewModels()
+    private val conferenceViewModel: ConferenceViewModel by viewModels {
+        ConferenceViewModelFactory(
+            ConferenceRepository(AppDatabase.getDatabase(applicationContext))
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +51,7 @@ class MainActivity : AppCompatActivity() {
                                 }
                                 is SuccessState -> {
                                     ConferenceCardList(conferenceDataList = state.conferenceDataList)
-                                    FiltersScreen(
+                                    FilterDialog(
                                         filtersScreenState = filtersScreenState,
                                         onApplyClick = { filters ->
                                             conferenceViewModel.filterList(filters = filters)

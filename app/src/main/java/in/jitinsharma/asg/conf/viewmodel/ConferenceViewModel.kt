@@ -1,10 +1,8 @@
 package `in`.jitinsharma.asg.conf.viewmodel
 
-import `in`.jitinsharma.asg.conf.model.CfpOpenFilter
-import `in`.jitinsharma.asg.conf.model.ConferenceData
-import `in`.jitinsharma.asg.conf.model.ConferenceFilter
-import `in`.jitinsharma.asg.conf.model.CountryFilter
+import `in`.jitinsharma.asg.conf.model.*
 import `in`.jitinsharma.asg.conf.repository.ConferenceRepository
+import androidx.collection.ArraySet
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,12 +10,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class ConferenceViewModel : ViewModel() {
-
-    //TODO Move this to constructor and create ViewModelFactory
-    private val conferenceRepository: ConferenceRepository = ConferenceRepository()
+class ConferenceViewModel(
+    private val conferenceRepository: ConferenceRepository
+) : ViewModel() {
 
     var conferenceListLiveData: MutableLiveData<ConferenceListState> = MutableLiveData()
+    var countryListLiveData: MutableLiveData<List<Country>> = MutableLiveData()
 
     private var originalList = mutableListOf<ConferenceData>()
 
@@ -26,7 +24,8 @@ class ConferenceViewModel : ViewModel() {
             conferenceListLiveData.postValue(LoadingState)
             var conferenceDataList: List<ConferenceData> = emptyList()
             withContext(Dispatchers.IO) {
-                conferenceDataList = conferenceRepository.getConferenceData()
+                conferenceRepository.loadConferenceData()
+                conferenceDataList = conferenceRepository.getConferenceDataList()
             }
             if (conferenceDataList.isNotEmpty()) {
                 originalList.addAll(conferenceDataList)
@@ -53,23 +52,24 @@ class ConferenceViewModel : ViewModel() {
                         conferenceData.cfpData != null && conferenceData.cfpData!!.isCfpActive
                     }
                 }
-                is CountryFilter -> {}
+                is CountryFilter -> {
+                }
             }
         }
         conferenceListLiveData.postValue(SuccessState(confList))
     }
 
-    // Unable to do retry by using this extension since there is no explicit postValue to liveData
-    // instance which would cause state update.
-    /*fun getConferenceList() = liveData(Dispatchers.IO) {
-        emit(LoadingState)
-        try {
-            val conferenceDataList = conferenceRepository.getConferenceData()
-            emit(SuccessState(conferenceDataList))
-        } catch (e: Exception) {
-            emit(ErrorState)
+    fun loadCountryList() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val conferenceDataList = conferenceRepository.getConferenceDataList()
+            val countries = conferenceDataList.mapTo(ArraySet()) { countryName ->
+                Country(name = countryName.country)
+            }.toList()
+            withContext(Dispatchers.Main) {
+                countryListLiveData.postValue(countries)
+            }
         }
-    }*/
+    }
 }
 
 sealed class ConferenceListState
