@@ -1,9 +1,18 @@
-# asg-conf
+# android-conferences
 
-A project to test out Jetpack Compose. This app pulls out conferences data from 
-[this](http://androidstudygroup.github.io/conferences/) website and displays as a list.
+An app which displayes list of conferences happening all over the world sourced from
+[this](http://androidstudygroup.github.io/conferences/) website.
+
+### Features
+- Display conferences with relevant details. ✅
+- Offline support. ✅
+- Filter conferences by cfp status and by country. ✅
+- CFP reminder.
+- New conference reminder.
+- ...
 
 ### Objectives for this project
+This project is being built with Jetpack Compose with following objectives in mind
 - Build a multi screen UI with Compose.
 - Understand how state management will work with Compose
 - Make app reactive to changes from network + DB as well as implement a simple UI filter
@@ -12,8 +21,4 @@ A project to test out Jetpack Compose. This app pulls out conferences data from
 
 ## Screenshots
 ![](/art/screenshot.png)
-
-**Note**
-
-This is an experimental project which will *probably* only compile with latest canary versions of 
-Android Studio.
+![](/art/screenshot_filter.png)

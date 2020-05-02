@@ -53,9 +53,10 @@ class MainActivity : AppCompatActivity() {
                                     ConferenceCardList(conferenceDataList = state.conferenceDataList)
                                     FilterDialog(
                                         filtersScreenState = filtersScreenState,
-                                        onApplyClick = { filters ->
-                                            conferenceViewModel.filterList(filters = filters)
-                                        }
+                                        onApplyClick = { filter ->
+                                            conferenceViewModel.filterList(filter = filter)
+                                        },
+                                        conferenceViewModel = conferenceViewModel
                                     )
                                 }
                                 is ErrorState -> {

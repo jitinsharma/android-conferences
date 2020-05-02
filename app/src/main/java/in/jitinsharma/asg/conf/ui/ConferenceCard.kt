@@ -145,7 +145,7 @@ fun ConferenceCardPreview() {
                 city = "New York City, NY",
                 country = "USA",
                 date = "2020-08-31",
-                isActive = false,
+                isActive = true,
                 cfpData = ConferenceData.CfpData(
                     cfpDate = "2020-06-30"
                 )

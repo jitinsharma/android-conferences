@@ -1,19 +1,19 @@
 package `in`.jitinsharma.asg.conf.ui
 
-import `in`.jitinsharma.asg.conf.model.CfpOpenFilter
-import `in`.jitinsharma.asg.conf.model.ConferenceFilter
+import `in`.jitinsharma.asg.conf.model.Country
 import `in`.jitinsharma.asg.conf.utils.ThemedPreview
+import `in`.jitinsharma.asg.conf.viewmodel.ConferenceViewModel
 import androidx.compose.Composable
 import androidx.compose.Model
+import androidx.compose.remember
+import androidx.compose.state
 import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
-import androidx.ui.foundation.Clickable
-import androidx.ui.foundation.Dialog
-import androidx.ui.foundation.Text
+import androidx.ui.foundation.*
 import androidx.ui.layout.*
+import androidx.ui.livedata.observeAsState
 import androidx.ui.material.Card
 import androidx.ui.material.Checkbox
-import androidx.ui.material.Divider
 import androidx.ui.material.MaterialTheme
 import androidx.ui.material.ripple.ripple
 import androidx.ui.text.TextStyle
@@ -21,24 +21,34 @@ import androidx.ui.text.font.FontWeight
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 
-private val appliedFilters = mutableSetOf<ConferenceFilter>()
+val appliedFilter = AppliedFilter()
+
+data class AppliedFilter(
+    var cfpFilterSelected: Boolean = false,
+    var selectedCountries: MutableList<Country> = mutableListOf()
+)
 
 @Model
 data class FiltersScreenState(
     var shouldDisplay: Boolean = false,
-    var cfpFilterChecked: Boolean = appliedFilters.contains(CfpOpenFilter)
+    var cfpFilterChecked: Boolean = appliedFilter.cfpFilterSelected
 )
 
 @Composable
 fun FilterDialog(
     filtersScreenState: FiltersScreenState = FiltersScreenState(),
-    onApplyClick: (filters: Set<ConferenceFilter>) -> Unit
+    onApplyClick: (filter: AppliedFilter) -> Unit,
+    conferenceViewModel: ConferenceViewModel
 ) {
     if (filtersScreenState.shouldDisplay) {
+        conferenceViewModel.loadCountryList()
+        val countryListState =
+            conferenceViewModel.countryListLiveData.observeAsState()
         Dialog(onCloseRequest = { filtersScreenState.shouldDisplay = false }) {
             FiltersScreen(
                 filtersScreenState = filtersScreenState,
-                onApplyClick = onApplyClick
+                onApplyClick = onApplyClick,
+                countyList = countryListState.value
             )
         }
     }
@@ -47,33 +57,47 @@ fun FilterDialog(
 @Composable
 fun FiltersScreen(
     filtersScreenState: FiltersScreenState = FiltersScreenState(),
-    onApplyClick: (filters: Set<ConferenceFilter>) -> Unit
+    onApplyClick: (filter: AppliedFilter) -> Unit,
+    countyList: List<Country>?
 ) {
     Card(
         color = themeColors.secondary
     ) {
-        Column(modifier = Modifier.wrapContentSize().padding(8.dp)) {
+        Column(modifier = Modifier.wrapContentSize()) {
+            Box(
+                backgroundColor = themeColors.primary,
+                gravity = ContentGravity.Center,
+                padding = 8.dp,
+                modifier = Modifier.fillMaxWidth().gravity(align = Alignment.CenterHorizontally)
+            ) {
+                Text(
+                    text = "FILTERS",
+                    color = themeColors.secondary,
+                    style = MaterialTheme.typography.h6
+                )
+            }
+
+            Spacer(modifier = Modifier.preferredHeight(4.dp))
+
             Text(
-                modifier = Modifier.gravity(align = Alignment.CenterHorizontally),
-                text = "FILTERS",
+                text = "Cfp Status",
+                modifier = Modifier.padding(start = 8.dp),
                 color = themeColors.primary,
-                style = MaterialTheme.typography.h6
-            )
-            Divider(
-                modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
-                color = themeColors.primary
+                style = MaterialTheme.typography.body1.merge(
+                    other = TextStyle(
+                        fontWeight = FontWeight.Bold
+                    )
+                )
             )
 
+            Spacer(modifier = Modifier.preferredHeight(4.dp))
+
             Clickable(
-                modifier = Modifier.ripple(),
+                modifier = Modifier.ripple().padding(start = 8.dp),
                 onClick = {
                     filtersScreenState.cfpFilterChecked =
                         filtersScreenState.cfpFilterChecked.not()
-                    if (filtersScreenState.cfpFilterChecked) {
-                        appliedFilters.add(CfpOpenFilter)
-                    } else {
-                        appliedFilters.remove(CfpOpenFilter)
-                    }
+                    appliedFilter.cfpFilterSelected = filtersScreenState.cfpFilterChecked
                 }) {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Checkbox(
@@ -81,11 +105,7 @@ fun FiltersScreen(
                         onCheckedChange = {
                             filtersScreenState.cfpFilterChecked =
                                 filtersScreenState.cfpFilterChecked.not()
-                            if (filtersScreenState.cfpFilterChecked) {
-                                appliedFilters.add(CfpOpenFilter)
-                            } else {
-                                appliedFilters.remove(CfpOpenFilter)
-                            }
+                            appliedFilter.cfpFilterSelected = filtersScreenState.cfpFilterChecked
                         },
                         color = themeColors.primary
                     )
@@ -98,42 +118,108 @@ fun FiltersScreen(
                 }
             }
 
-            Divider(
-                modifier = Modifier.padding(top = 4.dp, bottom = 4.dp),
-                color = themeColors.primary
-            )
+            Spacer(modifier = Modifier.preferredHeight(8.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+            countyList?.let {
+                CountryList(countyList = it)
+            }
+
+            Box(
+                backgroundColor = themeColors.primary,
+                padding = 8.dp
             ) {
-                Clickable(
-                    modifier = Modifier.ripple(),
-                    onClick = { filtersScreenState.shouldDisplay = false }) {
-                    Text(
-                        text = "CANCEL",
-                        modifier = Modifier.padding(start = 8.dp),
-                        color = themeColors.primary,
-                        style = MaterialTheme.typography.button.merge(
-                            other = TextStyle(
-                                fontWeight = FontWeight.Bold
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Clickable(
+                        modifier = Modifier.ripple(),
+                        onClick = { filtersScreenState.shouldDisplay = false }) {
+                        Text(
+                            text = "CANCEL",
+                            modifier = Modifier.padding(start = 8.dp),
+                            color = themeColors.secondary,
+                            style = MaterialTheme.typography.button.merge(
+                                other = TextStyle(
+                                    fontWeight = FontWeight.Bold
+                                )
                             )
                         )
-                    )
+                    }
+                    Clickable(modifier = Modifier.ripple(), onClick = {
+                        onApplyClick(appliedFilter)
+                        filtersScreenState.shouldDisplay = false
+                    }) {
+                        Text(
+                            text = "APPLY",
+                            modifier = Modifier.padding(start = 8.dp),
+                            color = themeColors.secondary,
+                            style = MaterialTheme.typography.button.merge(
+                                other = TextStyle(
+                                    fontWeight = FontWeight.Bold
+                                )
+                            )
+                        )
+                    }
                 }
-                Clickable(modifier = Modifier.ripple(), onClick = {
-                    onApplyClick(appliedFilters)
-                    filtersScreenState.shouldDisplay = false
-                }) {
+            }
+
+        }
+    }
+}
+
+@Composable
+fun CountryList(
+    countyList: List<Country>
+) {
+    Column(
+        modifier = Modifier.preferredHeight(360.dp)
+    ) {
+        Text(
+            text = "Countries",
+            color = themeColors.primary,
+            modifier = Modifier.padding(start = 8.dp),
+            style = MaterialTheme.typography.body1.merge(
+                other = TextStyle(
+                    fontWeight = FontWeight.Bold
+                )
+            )
+        )
+        Spacer(modifier = Modifier.preferredHeight(8.dp))
+        AdapterList(
+            data = countyList,
+            modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically)
+        ) { country ->
+            val countryChecked = state { appliedFilter.selectedCountries.contains(country) }
+            Clickable(
+                modifier = Modifier.ripple(),
+                onClick = {
+                    countryChecked.value = countryChecked.value.not()
+                    if (countryChecked.value) {
+                        appliedFilter.selectedCountries.add(country)
+                    } else {
+                        appliedFilter.selectedCountries.remove(country)
+                    }
+                }
+            ) {
+                Row(modifier = Modifier.fillMaxWidth().padding(start = 8.dp, bottom = 4.dp)) {
+                    Checkbox(
+                        checked = countryChecked.value,
+                        onCheckedChange = {
+                            countryChecked.value = countryChecked.value.not()
+                            if (countryChecked.value) {
+                                appliedFilter.selectedCountries.add(country)
+                            } else {
+                                appliedFilter.selectedCountries.remove(country)
+                            }
+                        },
+                        color = themeColors.primary
+                    )
                     Text(
-                        text = "APPLY",
-                        modifier = Modifier.padding(start = 8.dp),
+                        text = country.name,
+                        modifier = Modifier.padding(start = 8.dp, top = 2.dp),
                         color = themeColors.primary,
-                        style = MaterialTheme.typography.button.merge(
-                            other = TextStyle(
-                                fontWeight = FontWeight.Bold
-                            )
-                        )
+                        style = MaterialTheme.typography.body2
                     )
                 }
             }
@@ -147,7 +233,15 @@ fun FilterScreenPreview() {
     ThemedPreview {
         FiltersScreen(
             filtersScreenState = FiltersScreenState(shouldDisplay = true),
-            onApplyClick = {}
+            onApplyClick = {},
+            countyList = listOf(
+                Country("US"),
+                Country("UK"),
+                Country("India"),
+                Country("Germany"),
+                Country("Japan"),
+                Country("Poland")
+            )
         )
     }
 }

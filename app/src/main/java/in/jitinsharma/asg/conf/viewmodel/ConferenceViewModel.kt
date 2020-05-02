@@ -1,7 +1,9 @@
 package `in`.jitinsharma.asg.conf.viewmodel
 
-import `in`.jitinsharma.asg.conf.model.*
+import `in`.jitinsharma.asg.conf.model.ConferenceData
+import `in`.jitinsharma.asg.conf.model.Country
 import `in`.jitinsharma.asg.conf.repository.ConferenceRepository
+import `in`.jitinsharma.asg.conf.ui.AppliedFilter
 import androidx.collection.ArraySet
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -38,22 +40,17 @@ class ConferenceViewModel(
 
     @ExperimentalStdlibApi
     fun filterList(
-        filters: Set<ConferenceFilter>
+        filter: AppliedFilter
     ) {
-        if (filters.isEmpty()) {
-            conferenceListLiveData.postValue(SuccessState(originalList))
-            return
-        }
         var confList = buildList { addAll(originalList) }
-        filters.forEach { filter ->
-            when (filter) {
-                is CfpOpenFilter -> {
-                    confList = confList.filter { conferenceData ->
-                        conferenceData.cfpData != null && conferenceData.cfpData!!.isCfpActive
-                    }
-                }
-                is CountryFilter -> {
-                }
+        if (filter.cfpFilterSelected) {
+            confList = confList.filter { conferenceData ->
+                conferenceData.cfpData != null && conferenceData.cfpData!!.isCfpActive
+            }
+        }
+        if (filter.selectedCountries.isNotEmpty()) {
+            confList = confList.filter { conferenceData ->
+                filter.selectedCountries.contains(Country(conferenceData.country))
             }
         }
         conferenceListLiveData.postValue(SuccessState(confList))
