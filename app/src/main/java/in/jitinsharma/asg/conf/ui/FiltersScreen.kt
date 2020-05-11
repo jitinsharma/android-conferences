@@ -1,17 +1,16 @@
 package `in`.jitinsharma.asg.conf.ui
 
 import `in`.jitinsharma.asg.conf.model.Country
+import `in`.jitinsharma.asg.conf.redux.actions.*
+import `in`.jitinsharma.asg.conf.redux.state.FilterState
+import `in`.jitinsharma.asg.conf.redux.store
 import `in`.jitinsharma.asg.conf.utils.ThemedPreview
-import `in`.jitinsharma.asg.conf.viewmodel.ConferenceViewModel
 import androidx.compose.Composable
-import androidx.compose.Model
-import androidx.compose.remember
 import androidx.compose.state
 import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.*
 import androidx.ui.layout.*
-import androidx.ui.livedata.observeAsState
 import androidx.ui.material.Card
 import androidx.ui.material.Checkbox
 import androidx.ui.material.MaterialTheme
@@ -21,34 +20,30 @@ import androidx.ui.text.font.FontWeight
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
 
-val appliedFilter = AppliedFilter()
-
-data class AppliedFilter(
-    var cfpFilterSelected: Boolean = false,
-    var selectedCountries: MutableList<Country> = mutableListOf()
-)
-
-@Model
-data class FiltersScreenState(
-    var shouldDisplay: Boolean = false,
-    var cfpFilterChecked: Boolean = appliedFilter.cfpFilterSelected
-)
+//val appliedFilter = AppliedFilter()
+//
+//data class AppliedFilter(
+//    var cfpFilterSelected: Boolean = false,
+//    var selectedCountries: MutableList<Country> = mutableListOf()
+//)
+//
+//@Model
+//data class FiltersScreenState(
+//    var shouldDisplay: Boolean = false,
+//    var cfpFilterChecked: Boolean = appliedFilter.cfpFilterSelected
+//)
 
 @Composable
 fun FilterDialog(
-    filtersScreenState: FiltersScreenState = FiltersScreenState(),
-    onApplyClick: (filter: AppliedFilter) -> Unit,
-    conferenceViewModel: ConferenceViewModel
+    filterState: FilterState
 ) {
-    if (filtersScreenState.shouldDisplay) {
-        conferenceViewModel.loadCountryList()
-        val countryListState =
-            conferenceViewModel.countryListLiveData.observeAsState()
-        Dialog(onCloseRequest = { filtersScreenState.shouldDisplay = false }) {
+    if (filterState.displayDialog) {
+        store.dispatch(LoadCountries())
+        Dialog(onCloseRequest = { store.dispatch(HideDialog()) }) {
             FiltersScreen(
-                filtersScreenState = filtersScreenState,
-                onApplyClick = onApplyClick,
-                countyList = countryListState.value
+                cfpFilterChecked = filterState.cfpFilterChecked,
+                selectedCountries = filterState.selectedCountries,
+                countyList = filterState.countryList
             )
         }
     }
@@ -56,8 +51,8 @@ fun FilterDialog(
 
 @Composable
 fun FiltersScreen(
-    filtersScreenState: FiltersScreenState = FiltersScreenState(),
-    onApplyClick: (filter: AppliedFilter) -> Unit,
+    cfpFilterChecked: Boolean = false,
+    selectedCountries: MutableList<Country>,
     countyList: List<Country>?
 ) {
     Card(
@@ -92,20 +87,17 @@ fun FiltersScreen(
 
             Spacer(modifier = Modifier.preferredHeight(4.dp))
 
+            val cfpFilterCheckState = state { cfpFilterChecked }
             Clickable(
                 modifier = Modifier.ripple().padding(start = 8.dp),
                 onClick = {
-                    filtersScreenState.cfpFilterChecked =
-                        filtersScreenState.cfpFilterChecked.not()
-                    appliedFilter.cfpFilterSelected = filtersScreenState.cfpFilterChecked
+                    cfpFilterCheckState.value = cfpFilterCheckState.value.not()
                 }) {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Checkbox(
-                        checked = filtersScreenState.cfpFilterChecked,
+                        checked = cfpFilterCheckState.value,
                         onCheckedChange = {
-                            filtersScreenState.cfpFilterChecked =
-                                filtersScreenState.cfpFilterChecked.not()
-                            appliedFilter.cfpFilterSelected = filtersScreenState.cfpFilterChecked
+                            cfpFilterCheckState.value = cfpFilterCheckState.value.not()
                         },
                         color = themeColors.primary
                     )
@@ -121,7 +113,10 @@ fun FiltersScreen(
             Spacer(modifier = Modifier.preferredHeight(8.dp))
 
             countyList?.let {
-                CountryList(countyList = it)
+                CountryList(
+                    countyList = it,
+                    selectedCountries = selectedCountries
+                )
             }
 
             Box(
@@ -134,7 +129,7 @@ fun FiltersScreen(
                 ) {
                     Clickable(
                         modifier = Modifier.ripple(),
-                        onClick = { filtersScreenState.shouldDisplay = false }) {
+                        onClick = { store.dispatch(HideDialog()) }) {
                         Text(
                             text = "CANCEL",
                             modifier = Modifier.padding(start = 8.dp),
@@ -147,8 +142,10 @@ fun FiltersScreen(
                         )
                     }
                     Clickable(modifier = Modifier.ripple(), onClick = {
-                        onApplyClick(appliedFilter)
-                        filtersScreenState.shouldDisplay = false
+                        store.dispatch(SetCFPFilterCheck(cfpFilterCheckState.value))
+                        store.dispatch(SetSelectedCountries(selectedCountries))
+                        store.dispatch(HideDialog())
+                        store.dispatch(FilterConferences(cfpFilterCheckState.value, selectedCountries))
                     }) {
                         Text(
                             text = "APPLY",
@@ -170,7 +167,8 @@ fun FiltersScreen(
 
 @Composable
 fun CountryList(
-    countyList: List<Country>
+    countyList: List<Country>,
+    selectedCountries: MutableList<Country>
 ) {
     Column(
         modifier = Modifier.preferredHeight(360.dp)
@@ -190,15 +188,15 @@ fun CountryList(
             data = countyList,
             modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically)
         ) { country ->
-            val countryChecked = state { appliedFilter.selectedCountries.contains(country) }
+            val countryChecked = state { selectedCountries.contains(country) }
             Clickable(
                 modifier = Modifier.ripple(),
                 onClick = {
                     countryChecked.value = countryChecked.value.not()
                     if (countryChecked.value) {
-                        appliedFilter.selectedCountries.add(country)
+                        selectedCountries.add(country)
                     } else {
-                        appliedFilter.selectedCountries.remove(country)
+                        selectedCountries.remove(country)
                     }
                 }
             ) {
@@ -208,9 +206,9 @@ fun CountryList(
                         onCheckedChange = {
                             countryChecked.value = countryChecked.value.not()
                             if (countryChecked.value) {
-                                appliedFilter.selectedCountries.add(country)
+                                selectedCountries.add(country)
                             } else {
-                                appliedFilter.selectedCountries.remove(country)
+                                selectedCountries.remove(country)
                             }
                         },
                         color = themeColors.primary
@@ -232,8 +230,6 @@ fun CountryList(
 fun FilterScreenPreview() {
     ThemedPreview {
         FiltersScreen(
-            filtersScreenState = FiltersScreenState(shouldDisplay = true),
-            onApplyClick = {},
             countyList = listOf(
                 Country("US"),
                 Country("UK"),
@@ -241,7 +237,8 @@ fun FilterScreenPreview() {
                 Country("Germany"),
                 Country("Japan"),
                 Country("Poland")
-            )
+            ),
+            selectedCountries = mutableListOf()
         )
     }
 }

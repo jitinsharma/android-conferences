@@ -1,10 +1,10 @@
 package `in`.jitinsharma.asg.conf.ui
 
-import `in`.jitinsharma.asg.conf.database.AppDatabase
-import `in`.jitinsharma.asg.conf.repository.ConferenceRepository
-import `in`.jitinsharma.asg.conf.viewmodel.*
+import `in`.jitinsharma.asg.conf.redux.actions.DisplayLoading
+import `in`.jitinsharma.asg.conf.redux.actions.LoadConferences
+import `in`.jitinsharma.asg.conf.redux.observeAsState
+import `in`.jitinsharma.asg.conf.redux.store
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.ui.animation.Crossfade
 import androidx.ui.core.Modifier
@@ -13,7 +13,6 @@ import androidx.ui.foundation.Box
 import androidx.ui.layout.Column
 import androidx.ui.layout.fillMaxWidth
 import androidx.ui.layout.padding
-import androidx.ui.livedata.observeAsState
 import androidx.ui.material.MaterialTheme
 import androidx.ui.unit.dp
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -22,47 +21,40 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @ExperimentalCoroutinesApi
 class MainActivity : AppCompatActivity() {
 
-    private val conferenceViewModel: ConferenceViewModel by viewModels {
-        ConferenceViewModelFactory(
-            ConferenceRepository(AppDatabase.getDatabase(applicationContext))
-        )
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        conferenceViewModel.loadConferenceList()
         setContent {
-            val conferenceDataListState =
-                conferenceViewModel.conferenceListLiveData.observeAsState()
             MaterialTheme(colors = themeColors) {
                 Box(backgroundColor = MaterialTheme.colors.primary) {
-                    val filtersScreenState = FiltersScreenState(shouldDisplay = false)
+                    store.dispatch(DisplayLoading())
+                    store.dispatch(LoadConferences())
+                    val appState = store.observeAsState()
                     Column(modifier = Modifier.fillMaxWidth().padding(all = 16.dp)) {
-                        Header(
-                            modifier = Modifier.padding(bottom = 16.dp),
-                            onFilterIconClick = {
-                                filtersScreenState.shouldDisplay =
-                                    filtersScreenState.shouldDisplay.not()
-                            })
-                        Crossfade(current = conferenceDataListState.value) { state ->
-                            when (state) {
-                                is LoadingState -> {
-                                    LoadingView()
-                                }
-                                is SuccessState -> {
-                                    ConferenceCardList(conferenceDataList = state.conferenceDataList)
-                                    FilterDialog(
-                                        filtersScreenState = filtersScreenState,
-                                        onApplyClick = { filter ->
-                                            conferenceViewModel.filterList(filter = filter)
-                                        },
-                                        conferenceViewModel = conferenceViewModel
-                                    )
-                                }
-                                is ErrorState -> {
-                                    WtfView(
-                                        onRetryClick = { conferenceViewModel.loadConferenceList() }
-                                    )
+                        Header(modifier = Modifier.padding(bottom = 16.dp))
+                        Crossfade(current = appState.value?.conferenceListState) { state ->
+                            state?.run {
+                                when {
+                                    isLoading -> {
+                                        LoadingView()
+                                    }
+                                    conferenceDataList.isNotEmpty() -> {
+                                        val list = if (filteredConferenceDataList.isNotEmpty()) {
+                                            filteredConferenceDataList
+                                        } else {
+                                            conferenceDataList
+                                        }
+                                        ConferenceCardList(conferenceDataList = list)
+                                        appState.value?.filterState?.let { filterState ->
+                                            FilterDialog(
+                                                filterState = filterState
+                                            )
+                                        }
+                                    }
+                                    displayError -> {
+                                        WtfView()
+                                    }
+                                    else -> {
+                                    }
                                 }
                             }
                         }
@@ -72,4 +64,3 @@ class MainActivity : AppCompatActivity() {
         }
     }
 }
-

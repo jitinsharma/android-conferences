@@ -1,5 +1,8 @@
 package `in`.jitinsharma.asg.conf.ui
 
+import `in`.jitinsharma.asg.conf.redux.actions.DisplayLoading
+import `in`.jitinsharma.asg.conf.redux.actions.LoadConferences
+import `in`.jitinsharma.asg.conf.redux.store
 import `in`.jitinsharma.asg.conf.utils.ThemedPreview
 import androidx.compose.Composable
 import androidx.ui.core.Alignment
@@ -20,9 +23,7 @@ import androidx.ui.unit.TextUnit
 import androidx.ui.unit.dp
 
 @Composable
-fun WtfView(
-    onRetryClick: () -> Unit
-) {
+fun WtfView() {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -44,7 +45,10 @@ fun WtfView(
         Button(
             modifier = Modifier.padding(top = 8.dp),
             backgroundColor = MaterialTheme.colors.secondary,
-            onClick = { onRetryClick() }) {
+            onClick = {
+                store.dispatch(DisplayLoading())
+                store.dispatch(LoadConferences())
+            }) {
             Text(
                 text = "Retry",
                 color = MaterialTheme.colors.primary
@@ -57,6 +61,6 @@ fun WtfView(
 @Composable
 fun WtfViewPreview() {
     ThemedPreview {
-        WtfView(onRetryClick = {})
+        WtfView()
     }
 }
