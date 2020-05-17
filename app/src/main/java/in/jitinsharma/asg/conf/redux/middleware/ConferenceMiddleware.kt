@@ -13,38 +13,44 @@ import kotlinx.coroutines.launch
 import org.rekotlin.DispatchFunction
 import org.rekotlin.Middleware
 
-val conferenceMiddleware: Middleware<AppState> = { dispatch, _ ->
-    { next ->
-        { action ->
-            when (action) {
-                is LoadConferences -> {
-                    loadConferences(dispatch)
+class ConferenceMiddleware : Middleware<AppState> {
+
+    override fun invoke(
+        dispatchFunction: DispatchFunction,
+        appStateCallBack: () -> AppState?
+    ): (DispatchFunction) -> DispatchFunction {
+        return { dispatch ->
+            { action ->
+                when (action) {
+                    is LoadConferences -> {
+                        loadConferences(dispatchFunction)
+                    }
+                    is LoadCountries -> {
+                        loadCountries(dispatchFunction)
+                    }
                 }
-                is LoadCountries -> {
-                    loadCountries(dispatch)
-                }
+                dispatch(action)
             }
-            next(action)
         }
     }
-}
 
-fun loadConferences(dispatchFunction: DispatchFunction) {
-    val conferenceRepository = Container.conferenceRepository
-    GlobalScope.launch {
-        conferenceRepository.loadConferenceData()
-        val conferenceDataList = conferenceRepository.getConferenceDataList()
-        dispatchFunction.invoke(DisplayConferences(conferenceDataList))
+    private fun loadConferences(dispatchFunction: DispatchFunction) {
+        val conferenceRepository = Container.conferenceRepository
+        GlobalScope.launch {
+            conferenceRepository.loadConferenceData()
+            val conferenceDataList = conferenceRepository.getConferenceDataList()
+            dispatchFunction.invoke(DisplayConferences(conferenceDataList))
+        }
     }
-}
 
-fun loadCountries(dispatchFunction: DispatchFunction) {
-    val conferenceRepository = Container.conferenceRepository
-    GlobalScope.launch {
-        val conferenceDataList = conferenceRepository.getConferenceDataList()
-        val countries = conferenceDataList.mapTo(ArraySet()) { countryName ->
-            Country(name = countryName.country)
-        }.toList()
-        dispatchFunction.invoke(DisplayCountries(countries))
+    private fun loadCountries(dispatchFunction: DispatchFunction) {
+        val conferenceRepository = Container.conferenceRepository
+        GlobalScope.launch {
+            val conferenceDataList = conferenceRepository.getConferenceDataList()
+            val countries = conferenceDataList.mapTo(ArraySet()) { countryName ->
+                Country(name = countryName.country)
+            }.toList()
+            dispatchFunction.invoke(DisplayCountries(countries))
+        }
     }
 }
