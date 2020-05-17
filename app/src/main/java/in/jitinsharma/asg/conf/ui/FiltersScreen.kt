@@ -5,7 +5,6 @@ import `in`.jitinsharma.asg.conf.utils.ThemedPreview
 import `in`.jitinsharma.asg.conf.viewmodel.ConferenceViewModel
 import androidx.compose.Composable
 import androidx.compose.Model
-import androidx.compose.remember
 import androidx.compose.state
 import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
