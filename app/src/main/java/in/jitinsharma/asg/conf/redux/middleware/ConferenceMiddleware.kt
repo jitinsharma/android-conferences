@@ -6,14 +6,17 @@ import `in`.jitinsharma.asg.conf.redux.actions.DisplayCountries
 import `in`.jitinsharma.asg.conf.redux.actions.LoadConferences
 import `in`.jitinsharma.asg.conf.redux.actions.LoadCountries
 import `in`.jitinsharma.asg.conf.redux.state.AppState
-import `in`.jitinsharma.asg.conf.utils.Container
+import `in`.jitinsharma.asg.conf.repository.ConferenceRepository
 import androidx.collection.ArraySet
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.rekotlin.DispatchFunction
 import org.rekotlin.Middleware
 
-class ConferenceMiddleware : Middleware<AppState> {
+class ConferenceMiddleware(
+    private val coroutineScope: CoroutineScope,
+    private val conferenceRepository: ConferenceRepository
+) : Middleware<AppState> {
 
     override fun invoke(
         dispatchFunction: DispatchFunction,
@@ -35,8 +38,7 @@ class ConferenceMiddleware : Middleware<AppState> {
     }
 
     private fun loadConferences(dispatchFunction: DispatchFunction) {
-        val conferenceRepository = Container.conferenceRepository
-        GlobalScope.launch {
+        coroutineScope.launch {
             conferenceRepository.loadConferenceData()
             val conferenceDataList = conferenceRepository.getConferenceDataList()
             dispatchFunction.invoke(DisplayConferences(conferenceDataList))
@@ -44,8 +46,7 @@ class ConferenceMiddleware : Middleware<AppState> {
     }
 
     private fun loadCountries(dispatchFunction: DispatchFunction) {
-        val conferenceRepository = Container.conferenceRepository
-        GlobalScope.launch {
+        coroutineScope.launch {
             val conferenceDataList = conferenceRepository.getConferenceDataList()
             val countries = conferenceDataList.mapTo(ArraySet()) { countryName ->
                 Country(name = countryName.country)
