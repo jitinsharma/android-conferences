@@ -3,9 +3,10 @@ package `in`.jitinsharma.asg.conf.ui
 import `in`.jitinsharma.asg.conf.redux.actions.DisplayLoading
 import `in`.jitinsharma.asg.conf.redux.actions.LoadConferences
 import `in`.jitinsharma.asg.conf.redux.observeAsState
-import `in`.jitinsharma.asg.conf.redux.store
+import `in`.jitinsharma.asg.conf.redux.state.AppState
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.ui.animation.Crossfade
 import androidx.ui.core.Modifier
 import androidx.ui.core.setContent
@@ -16,10 +17,15 @@ import androidx.ui.layout.padding
 import androidx.ui.material.MaterialTheme
 import androidx.ui.unit.dp
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
+import org.rekotlin.Store
 
 @ExperimentalStdlibApi
 @ExperimentalCoroutinesApi
 class MainActivity : AppCompatActivity() {
+
+    private val store: Store<AppState> by inject { parametersOf(lifecycleScope) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +36,7 @@ class MainActivity : AppCompatActivity() {
                     store.dispatch(LoadConferences())
                     val appState = store.observeAsState()
                     Column(modifier = Modifier.fillMaxWidth().padding(all = 16.dp)) {
-                        Header(modifier = Modifier.padding(bottom = 16.dp))
+                        Header(modifier = Modifier.padding(bottom = 16.dp), store = store)
                         Crossfade(current = appState.value?.conferenceListState) { state ->
                             state?.run {
                                 when {
@@ -46,12 +52,13 @@ class MainActivity : AppCompatActivity() {
                                         ConferenceCardList(conferenceDataList = list)
                                         appState.value?.filterState?.let { filterState ->
                                             FilterDialog(
+                                                store = store,
                                                 filterState = filterState
                                             )
                                         }
                                     }
                                     displayError -> {
-                                        WtfView()
+                                        WtfView(store = store)
                                     }
                                     else -> {
                                     }

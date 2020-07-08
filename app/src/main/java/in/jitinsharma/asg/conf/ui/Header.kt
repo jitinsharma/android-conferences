@@ -2,7 +2,7 @@ package `in`.jitinsharma.asg.conf.ui
 
 import `in`.jitinsharma.asg.conf.R
 import `in`.jitinsharma.asg.conf.redux.actions.DisplayDialog
-import `in`.jitinsharma.asg.conf.redux.store
+import `in`.jitinsharma.asg.conf.redux.state.AppState
 import `in`.jitinsharma.asg.conf.utils.ThemedPreview
 import androidx.compose.Composable
 import androidx.ui.core.Modifier
@@ -16,9 +16,11 @@ import androidx.ui.material.ripple.ripple
 import androidx.ui.res.vectorResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
+import org.rekotlin.Store
 
 @Composable
 fun Header(
+    store: Store<AppState>,
     modifier: Modifier = Modifier
 ) {
     Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -50,6 +52,6 @@ fun Header(
 @Composable
 fun HeaderPreview() {
     ThemedPreview {
-        Header()
+        //Header()
     }
 }

@@ -2,7 +2,7 @@ package `in`.jitinsharma.asg.conf.ui
 
 import `in`.jitinsharma.asg.conf.redux.actions.DisplayLoading
 import `in`.jitinsharma.asg.conf.redux.actions.LoadConferences
-import `in`.jitinsharma.asg.conf.redux.store
+import `in`.jitinsharma.asg.conf.redux.state.AppState
 import `in`.jitinsharma.asg.conf.utils.ThemedPreview
 import androidx.compose.Composable
 import androidx.ui.core.Alignment
@@ -21,9 +21,12 @@ import androidx.ui.text.TextStyle
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.TextUnit
 import androidx.ui.unit.dp
+import org.rekotlin.Store
 
 @Composable
-fun WtfView() {
+fun WtfView(
+    store: Store<AppState>
+) {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -61,6 +64,6 @@ fun WtfView() {
 @Composable
 fun WtfViewPreview() {
     ThemedPreview {
-        WtfView()
+        //WtfView()
     }
 }

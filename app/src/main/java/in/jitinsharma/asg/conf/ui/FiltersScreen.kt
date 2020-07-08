@@ -2,8 +2,8 @@ package `in`.jitinsharma.asg.conf.ui
 
 import `in`.jitinsharma.asg.conf.model.Country
 import `in`.jitinsharma.asg.conf.redux.actions.*
+import `in`.jitinsharma.asg.conf.redux.state.AppState
 import `in`.jitinsharma.asg.conf.redux.state.FilterState
-import `in`.jitinsharma.asg.conf.redux.store
 import `in`.jitinsharma.asg.conf.utils.ThemedPreview
 import androidx.compose.Composable
 import androidx.compose.state
@@ -19,6 +19,7 @@ import androidx.ui.text.TextStyle
 import androidx.ui.text.font.FontWeight
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
+import org.rekotlin.Store
 
 //val appliedFilter = AppliedFilter()
 //
@@ -35,12 +36,14 @@ import androidx.ui.unit.dp
 
 @Composable
 fun FilterDialog(
+    store: Store<AppState>,
     filterState: FilterState
 ) {
     if (filterState.displayDialog) {
         store.dispatch(LoadCountries())
         Dialog(onCloseRequest = { store.dispatch(HideDialog()) }) {
             FiltersScreen(
+                store = store,
                 cfpFilterChecked = filterState.cfpFilterChecked,
                 selectedCountries = filterState.selectedCountries,
                 countyList = filterState.countryList
@@ -51,6 +54,7 @@ fun FilterDialog(
 
 @Composable
 fun FiltersScreen(
+    store: Store<AppState>,
     cfpFilterChecked: Boolean = false,
     selectedCountries: MutableList<Country>,
     countyList: List<Country>?
@@ -229,16 +233,16 @@ fun CountryList(
 @Composable
 fun FilterScreenPreview() {
     ThemedPreview {
-        FiltersScreen(
-            countyList = listOf(
-                Country("US"),
-                Country("UK"),
-                Country("India"),
-                Country("Germany"),
-                Country("Japan"),
-                Country("Poland")
-            ),
-            selectedCountries = mutableListOf()
-        )
+//        FiltersScreen(
+//            countyList = listOf(
+//                Country("US"),
+//                Country("UK"),
+//                Country("India"),
+//                Country("Germany"),
+//                Country("Japan"),
+//                Country("Poland")
+//            ),
+//            selectedCountries = mutableListOf()
+//        )
     }
 }
