@@ -3,7 +3,7 @@ package `in`.jitinsharma.asg.conf.ui
 import `in`.jitinsharma.asg.conf.model.ConferenceData
 import androidx.compose.Composable
 import androidx.ui.core.Modifier
-import androidx.ui.foundation.AdapterList
+import androidx.ui.foundation.lazy.LazyColumnItems
 import androidx.ui.layout.padding
 import androidx.ui.unit.dp
 
@@ -11,7 +11,7 @@ import androidx.ui.unit.dp
 fun ConferenceCardList(
     conferenceDataList: List<ConferenceData>
 ) {
-    AdapterList(data = conferenceDataList) {
+    LazyColumnItems(items = conferenceDataList, itemContent = {
         val index = conferenceDataList.indexOf(it)
         ConferenceCard(
             modifier = if (index == 0) {
@@ -21,5 +21,5 @@ fun ConferenceCardList(
             },
             conferenceData = it
         )
-    }
+    })
 }

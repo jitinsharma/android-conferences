@@ -10,19 +10,20 @@ import androidx.core.net.toUri
 import androidx.ui.core.Alignment
 import androidx.ui.core.ContextAmbient
 import androidx.ui.core.Modifier
-import androidx.ui.foundation.Clickable
+import androidx.ui.foundation.Box
 import androidx.ui.foundation.Icon
 import androidx.ui.foundation.Text
+import androidx.ui.foundation.clickable
 import androidx.ui.foundation.shape.corner.RoundedCornerShape
 import androidx.ui.graphics.Color
 import androidx.ui.layout.*
 import androidx.ui.material.Card
 import androidx.ui.material.MaterialTheme
-import androidx.ui.material.ripple.ripple
+import androidx.ui.material.ripple.RippleIndication
 import androidx.ui.res.vectorResource
-import androidx.ui.text.AnnotatedString
 import androidx.ui.text.SpanStyle
 import androidx.ui.text.TextStyle
+import androidx.ui.text.annotatedString
 import androidx.ui.text.font.FontWeight
 import androidx.ui.text.style.TextDecoration
 import androidx.ui.tooling.preview.Preview
@@ -52,10 +53,9 @@ fun ConferenceCard(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Clickable(
-                    onClick = { context.loadUrl(conferenceData.url) },
-                    modifier = Modifier.ripple()
-                ) {
+                Box(Modifier.clickable(
+                    indication = RippleIndication(),
+                    onClick = { context.loadUrl(conferenceData.url) }), children = {
                     Text(
                         text = conferenceData.name,
                         style = TextStyle(
@@ -64,7 +64,7 @@ fun ConferenceCard(
                             fontSize = TextUnit.Sp(18)
                         )
                     )
-                }
+                })
 
                 Row {
                     Icon(
@@ -98,12 +98,12 @@ fun ConferenceCard(
 
             if (showCfp(conferenceData.cfpData)) {
                 val cfpData = conferenceData.cfpData!!
-                Clickable(
-                    modifier = Modifier.ripple(),
+                Box(Modifier.clickable(
+                    indication = RippleIndication(),
                     onClick = { context.loadUrl(cfpData.cfpUrl) }
-                ) {
+                ), children = {
                     Text(
-                        text = AnnotatedString {
+                        text = annotatedString {
                             append("CFP closes on ")
                             pushStyle(
                                 SpanStyle(
@@ -116,7 +116,7 @@ fun ConferenceCard(
                         style = TextStyle(fontSize = TextUnit.Sp(12)),
                         modifier = Modifier.padding(top = 16.dp)
                     )
-                }
+                })
             }
         }
     }

@@ -10,11 +10,12 @@ import androidx.compose.state
 import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.*
+import androidx.ui.foundation.lazy.LazyColumnItems
 import androidx.ui.layout.*
 import androidx.ui.material.Card
 import androidx.ui.material.Checkbox
 import androidx.ui.material.MaterialTheme
-import androidx.ui.material.ripple.ripple
+import androidx.ui.material.ripple.RippleIndication
 import androidx.ui.text.TextStyle
 import androidx.ui.text.font.FontWeight
 import androidx.ui.tooling.preview.Preview
@@ -92,18 +93,19 @@ fun FiltersScreen(
             Spacer(modifier = Modifier.preferredHeight(4.dp))
 
             val cfpFilterCheckState = state { cfpFilterChecked }
-            Clickable(
-                modifier = Modifier.ripple().padding(start = 8.dp),
+            Box(Modifier.padding(start = 8.dp).clickable(
+                indication = RippleIndication(),
                 onClick = {
                     cfpFilterCheckState.value = cfpFilterCheckState.value.not()
-                }) {
+                }, enabled = true
+            ), children = {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Checkbox(
                         checked = cfpFilterCheckState.value,
                         onCheckedChange = {
                             cfpFilterCheckState.value = cfpFilterCheckState.value.not()
                         },
-                        color = themeColors.primary
+                        checkedColor = themeColors.primary
                     )
                     Text(
                         text = "Cfp Open",
@@ -112,7 +114,7 @@ fun FiltersScreen(
                         style = MaterialTheme.typography.body2
                     )
                 }
-            }
+            })
 
             Spacer(modifier = Modifier.preferredHeight(8.dp))
 
@@ -131,26 +133,34 @@ fun FiltersScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Clickable(
-                        modifier = Modifier.ripple(),
-                        onClick = { store.dispatch(HideDialog()) }) {
-                        Text(
-                            text = "CANCEL",
-                            modifier = Modifier.padding(start = 8.dp),
-                            color = themeColors.secondary,
-                            style = MaterialTheme.typography.button.merge(
-                                other = TextStyle(
-                                    fontWeight = FontWeight.Bold
+                    Box(Modifier.clickable(
+                        indication = RippleIndication(),
+                        onClick = { store.dispatch(HideDialog()) }),
+                        children = {
+                            Text(
+                                text = "CANCEL",
+                                modifier = Modifier.padding(start = 8.dp),
+                                color = themeColors.secondary,
+                                style = MaterialTheme.typography.button.merge(
+                                    other = TextStyle(
+                                        fontWeight = FontWeight.Bold
+                                    )
                                 )
                             )
-                        )
-                    }
-                    Clickable(modifier = Modifier.ripple(), onClick = {
-                        store.dispatch(SetCFPFilterCheck(cfpFilterCheckState.value))
-                        store.dispatch(SetSelectedCountries(selectedCountries))
-                        store.dispatch(HideDialog())
-                        store.dispatch(FilterConferences(cfpFilterCheckState.value, selectedCountries))
-                    }) {
+                        })
+                    Box(Modifier.clickable(
+                        indication = RippleIndication(),
+                        onClick = {
+                            store.dispatch(SetCFPFilterCheck(cfpFilterCheckState.value))
+                            store.dispatch(SetSelectedCountries(selectedCountries))
+                            store.dispatch(HideDialog())
+                            store.dispatch(
+                                FilterConferences(
+                                    cfpFilterCheckState.value,
+                                    selectedCountries
+                                )
+                            )
+                        }), children = {
                         Text(
                             text = "APPLY",
                             modifier = Modifier.padding(start = 8.dp),
@@ -161,7 +171,7 @@ fun FiltersScreen(
                                 )
                             )
                         )
-                    }
+                    })
                 }
             }
 
@@ -188,44 +198,45 @@ fun CountryList(
             )
         )
         Spacer(modifier = Modifier.preferredHeight(8.dp))
-        AdapterList(
-            data = countyList,
-            modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically)
-        ) { country ->
-            val countryChecked = state { selectedCountries.contains(country) }
-            Clickable(
-                modifier = Modifier.ripple(),
-                onClick = {
-                    countryChecked.value = countryChecked.value.not()
-                    if (countryChecked.value) {
-                        selectedCountries.add(country)
-                    } else {
-                        selectedCountries.remove(country)
+        LazyColumnItems(items = countyList,
+            modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically),
+            itemContent = { country ->
+                val countryChecked = state { selectedCountries.contains(country) }
+                Box(Modifier.clickable(
+                    indication = RippleIndication(),
+                    onClick = {
+                        countryChecked.value = countryChecked.value.not()
+                        if (countryChecked.value) {
+                            selectedCountries.add(country)
+                        } else {
+                            selectedCountries.remove(country)
+                        }
                     }
-                }
-            ) {
-                Row(modifier = Modifier.fillMaxWidth().padding(start = 8.dp, bottom = 4.dp)) {
-                    Checkbox(
-                        checked = countryChecked.value,
-                        onCheckedChange = {
-                            countryChecked.value = countryChecked.value.not()
-                            if (countryChecked.value) {
-                                selectedCountries.add(country)
-                            } else {
-                                selectedCountries.remove(country)
-                            }
-                        },
-                        color = themeColors.primary
-                    )
-                    Text(
-                        text = country.name,
-                        modifier = Modifier.padding(start = 8.dp, top = 2.dp),
-                        color = themeColors.primary,
-                        style = MaterialTheme.typography.body2
-                    )
-                }
-            }
-        }
+                ), children = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(start = 8.dp, bottom = 4.dp)
+                    ) {
+                        Checkbox(
+                            checked = countryChecked.value,
+                            onCheckedChange = {
+                                countryChecked.value = countryChecked.value.not()
+                                if (countryChecked.value) {
+                                    selectedCountries.add(country)
+                                } else {
+                                    selectedCountries.remove(country)
+                                }
+                            },
+                            checkedColor = themeColors.primary
+                        )
+                        Text(
+                            text = country.name,
+                            modifier = Modifier.padding(start = 8.dp, top = 2.dp),
+                            color = themeColors.primary,
+                            style = MaterialTheme.typography.body2
+                        )
+                    }
+                })
+            })
     }
 }
 

@@ -15,9 +15,9 @@ import androidx.ui.layout.fillMaxSize
 import androidx.ui.layout.padding
 import androidx.ui.material.Button
 import androidx.ui.material.MaterialTheme
-import androidx.ui.text.AnnotatedString
 import androidx.ui.text.SpanStyle
 import androidx.ui.text.TextStyle
+import androidx.ui.text.annotatedString
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.TextUnit
 import androidx.ui.unit.dp
@@ -33,7 +33,7 @@ fun WtfView(
         horizontalGravity = Alignment.CenterHorizontally
     ) {
         Text(
-            text = AnnotatedString {
+            text = annotatedString {
                 pushStyle(SpanStyle(color = Color(0xFFCEECFD)))
                 append("{")
                 pop()
