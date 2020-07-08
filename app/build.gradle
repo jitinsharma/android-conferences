@@ -53,7 +53,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.google.android.material:material:1.1.0'
     implementation "androidx.compose:compose-runtime:$compose_version"
-    implementation "androidx.ui:ui-framework:$compose_version"
+    implementation "androidx.ui:ui-core:$compose_version"
     implementation "androidx.ui:ui-layout:$compose_version"
     implementation "androidx.ui:ui-material:$compose_version"
     implementation "androidx.ui:ui-tooling:$compose_version"
