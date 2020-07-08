@@ -1,6 +1,8 @@
 package `in`.jitinsharma.asg.conf.ui
 
 import `in`.jitinsharma.asg.conf.R
+import `in`.jitinsharma.asg.conf.redux.actions.DisplayDialog
+import `in`.jitinsharma.asg.conf.redux.store
 import `in`.jitinsharma.asg.conf.utils.ThemedPreview
 import androidx.compose.Composable
 import androidx.ui.core.Modifier
@@ -17,11 +19,10 @@ import androidx.ui.unit.dp
 
 @Composable
 fun Header(
-    modifier: Modifier = Modifier,
-    onFilterIconClick: () -> Unit
+    modifier: Modifier = Modifier
 ) {
     Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        Clickable(onClick = { onFilterIconClick() }, modifier = Modifier.ripple()) {
+        Clickable(onClick = { store.dispatch(DisplayDialog()) }, modifier = Modifier.ripple()) {
             Image(
                 modifier = Modifier.padding(top = 12.dp),
                 asset = vectorResource(
@@ -49,8 +50,6 @@ fun Header(
 @Composable
 fun HeaderPreview() {
     ThemedPreview {
-        Header(
-            onFilterIconClick = {}
-        )
+        Header()
     }
 }
