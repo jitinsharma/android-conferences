@@ -9,6 +9,7 @@ import `in`.jitinsharma.asg.conf.redux.state.AppState
 import `in`.jitinsharma.asg.conf.repository.ConferenceRepository
 import androidx.collection.ArraySet
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.rekotlin.DispatchFunction
 import org.rekotlin.Middleware
@@ -38,7 +39,7 @@ class ConferenceMiddleware(
     }
 
     private fun loadConferences(dispatchFunction: DispatchFunction) {
-        coroutineScope.launch {
+        coroutineScope.launch(context = Dispatchers.IO) {
             conferenceRepository.loadConferenceData()
             val conferenceDataList = conferenceRepository.getConferenceDataList()
             dispatchFunction.invoke(DisplayConferences(conferenceDataList))
@@ -46,7 +47,7 @@ class ConferenceMiddleware(
     }
 
     private fun loadCountries(dispatchFunction: DispatchFunction) {
-        coroutineScope.launch {
+        coroutineScope.launch(context = Dispatchers.IO) {
             val conferenceDataList = conferenceRepository.getConferenceDataList()
             val countries = conferenceDataList.mapTo(ArraySet()) { countryName ->
                 Country(name = countryName.country)
