@@ -79,4 +79,8 @@ dependencies {
     implementation "org.rekotlin:rekotlin:1.0.4"
     implementation "org.koin:koin-androidx-scope:$koin_version"
     implementation "org.koin:koin-androidx-viewmodel:$koin_version"
+    implementation "androidx.datastore:datastore-preferences:1.0.0-SNAPSHOT"
+
+    def work_version = "2.3.4"
+    implementation "androidx.work:work-runtime-ktx:$work_version"
 }

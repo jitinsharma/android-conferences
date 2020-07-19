@@ -5,6 +5,7 @@ import `in`.jitinsharma.asg.conf.redux.actions.DisplayDialog
 import `in`.jitinsharma.asg.conf.redux.state.AppState
 import `in`.jitinsharma.asg.conf.utils.ThemedPreview
 import androidx.compose.Composable
+import androidx.compose.remember
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Box
 import androidx.ui.foundation.Image
@@ -17,13 +18,14 @@ import androidx.ui.material.ripple.RippleIndication
 import androidx.ui.res.vectorResource
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
+import org.koin.java.KoinJavaComponent.getKoin
 import org.rekotlin.Store
 
 @Composable
 fun Header(
-    store: Store<AppState>,
     modifier: Modifier = Modifier
 ) {
+    val store = remember { getKoin().get<Store<AppState>>() }
     Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         Box(Modifier.clickable(
             indication = RippleIndication(),
@@ -59,6 +61,6 @@ fun Header(
 @Composable
 fun HeaderPreview() {
     ThemedPreview {
-        //Header()
+        Header()
     }
 }

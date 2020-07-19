@@ -16,13 +16,10 @@ import androidx.ui.layout.fillMaxWidth
 import androidx.ui.layout.padding
 import androidx.ui.material.MaterialTheme
 import androidx.ui.unit.dp
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.android.ext.android.inject
 import org.koin.core.parameter.parametersOf
 import org.rekotlin.Store
 
-@ExperimentalStdlibApi
-@ExperimentalCoroutinesApi
 class MainActivity : AppCompatActivity() {
 
     private val store: Store<AppState> by inject { parametersOf(lifecycleScope) }
@@ -36,7 +33,7 @@ class MainActivity : AppCompatActivity() {
                     store.dispatch(LoadConferences())
                     val appState = store.observeAsState()
                     Column(modifier = Modifier.fillMaxWidth().padding(all = 16.dp)) {
-                        Header(modifier = Modifier.padding(bottom = 16.dp), store = store)
+                        Header(modifier = Modifier.padding(bottom = 16.dp))
                         Crossfade(current = appState.value?.conferenceListState) { state ->
                             state?.run {
                                 when {
@@ -52,13 +49,12 @@ class MainActivity : AppCompatActivity() {
                                         ConferenceCardList(conferenceDataList = list)
                                         appState.value?.filterState?.let { filterState ->
                                             FilterDialog(
-                                                store = store,
                                                 filterState = filterState
                                             )
                                         }
                                     }
                                     displayError -> {
-                                        WtfView(store = store)
+                                        WtfView()
                                     }
                                     else -> {
                                     }

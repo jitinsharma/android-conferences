@@ -89,8 +89,14 @@ fun ConferenceCard(
                     )
                 )
 
+                val location = if (conferenceData.city.isNotBlank()) {
+                    "${conferenceData.city}, ${conferenceData.country}"
+                } else {
+                    conferenceData.country
+                }
+
                 Text(
-                    text = "${conferenceData.city}, ${conferenceData.country}",
+                    text = location,
                     style = TextStyle(fontSize = TextUnit.Sp(12)),
                     modifier = Modifier.padding(top = 2.dp)
                 )

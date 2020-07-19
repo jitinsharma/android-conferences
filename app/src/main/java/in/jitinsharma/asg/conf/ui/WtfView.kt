@@ -5,6 +5,7 @@ import `in`.jitinsharma.asg.conf.redux.actions.LoadConferences
 import `in`.jitinsharma.asg.conf.redux.state.AppState
 import `in`.jitinsharma.asg.conf.utils.ThemedPreview
 import androidx.compose.Composable
+import androidx.compose.remember
 import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
 import androidx.ui.foundation.Text
@@ -21,12 +22,12 @@ import androidx.ui.text.annotatedString
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.TextUnit
 import androidx.ui.unit.dp
+import org.koin.java.KoinJavaComponent.getKoin
 import org.rekotlin.Store
 
 @Composable
-fun WtfView(
-    store: Store<AppState>
-) {
+fun WtfView() {
+    val store = remember { getKoin().get<Store<AppState>>() }
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -64,6 +65,6 @@ fun WtfView(
 @Composable
 fun WtfViewPreview() {
     ThemedPreview {
-        //WtfView()
+        WtfView()
     }
 }

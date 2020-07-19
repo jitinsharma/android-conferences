@@ -6,6 +6,7 @@ import `in`.jitinsharma.asg.conf.redux.state.AppState
 import `in`.jitinsharma.asg.conf.redux.state.FilterState
 import `in`.jitinsharma.asg.conf.utils.ThemedPreview
 import androidx.compose.Composable
+import androidx.compose.remember
 import androidx.compose.state
 import androidx.ui.core.Alignment
 import androidx.ui.core.Modifier
@@ -20,31 +21,18 @@ import androidx.ui.text.TextStyle
 import androidx.ui.text.font.FontWeight
 import androidx.ui.tooling.preview.Preview
 import androidx.ui.unit.dp
+import org.koin.java.KoinJavaComponent.getKoin
 import org.rekotlin.Store
-
-//val appliedFilter = AppliedFilter()
-//
-//data class AppliedFilter(
-//    var cfpFilterSelected: Boolean = false,
-//    var selectedCountries: MutableList<Country> = mutableListOf()
-//)
-//
-//@Model
-//data class FiltersScreenState(
-//    var shouldDisplay: Boolean = false,
-//    var cfpFilterChecked: Boolean = appliedFilter.cfpFilterSelected
-//)
 
 @Composable
 fun FilterDialog(
-    store: Store<AppState>,
     filterState: FilterState
 ) {
     if (filterState.displayDialog) {
+        val store = remember { getKoin().get<Store<AppState>>() }
         store.dispatch(LoadCountries())
         Dialog(onCloseRequest = { store.dispatch(HideDialog()) }) {
             FiltersScreen(
-                store = store,
                 cfpFilterChecked = filterState.cfpFilterChecked,
                 selectedCountries = filterState.selectedCountries,
                 countyList = filterState.countryList
@@ -55,11 +43,11 @@ fun FilterDialog(
 
 @Composable
 fun FiltersScreen(
-    store: Store<AppState>,
     cfpFilterChecked: Boolean = false,
     selectedCountries: MutableList<Country>,
     countyList: List<Country>?
 ) {
+    val store = remember { getKoin().get<Store<AppState>>() }
     Card(
         color = themeColors.secondary
     ) {
@@ -244,16 +232,16 @@ fun CountryList(
 @Composable
 fun FilterScreenPreview() {
     ThemedPreview {
-//        FiltersScreen(
-//            countyList = listOf(
-//                Country("US"),
-//                Country("UK"),
-//                Country("India"),
-//                Country("Germany"),
-//                Country("Japan"),
-//                Country("Poland")
-//            ),
-//            selectedCountries = mutableListOf()
-//        )
+        FiltersScreen(
+            countyList = listOf(
+                Country("US"),
+                Country("UK"),
+                Country("India"),
+                Country("Germany"),
+                Country("Japan"),
+                Country("Poland")
+            ),
+            selectedCountries = mutableListOf()
+        )
     }
 }

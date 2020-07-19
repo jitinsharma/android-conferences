@@ -1,6 +1,7 @@
 package `in`.jitinsharma.asg.conf.di
 
 import `in`.jitinsharma.asg.conf.database.AppDatabase
+import `in`.jitinsharma.asg.conf.preferences.AppPreferences
 import `in`.jitinsharma.asg.conf.redux.middleware.ConferenceMiddleware
 import `in`.jitinsharma.asg.conf.redux.reducer.appReducer
 import `in`.jitinsharma.asg.conf.repository.ConferenceRepository
@@ -24,4 +25,5 @@ val conferenceModule = module {
             )
         )
     }
+    single { AppPreferences(context = androidApplication()) }
 }

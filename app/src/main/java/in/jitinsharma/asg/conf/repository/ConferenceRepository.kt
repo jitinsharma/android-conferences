@@ -15,11 +15,16 @@ class ConferenceRepository(
 ) {
 
     suspend fun loadConferenceData() {
+        val conferenceDataList = getConferenceDataFromNetwork()
+        addConferenceDataToDB(conferenceDataList)
+    }
+
+    suspend fun getConferenceDataFromNetwork(): List<ConferenceData> {
         try {
             val document = getHTMLData()
             val conferenceListElement =
                 document.getElementsByClass("conference-list list-unstyled")[0]
-            val conferenceDataList = conferenceListElement
+            return conferenceListElement
                 .childNodes()
                 .filterNot { conferenceElement ->
                     (conferenceElement is TextNode) && conferenceElement.isBlank
@@ -28,9 +33,16 @@ class ConferenceRepository(
                 }.filterNot { conferenceData ->
                     conferenceData.isPast
                 }
-            addConferenceDataToDB(conferenceDataList)
         } catch (e: Exception) {
             println(e)
+            return emptyList()
+        }
+    }
+
+    suspend fun addConferenceDataToDB(conferenceDataList: List<ConferenceData>) {
+        appDatabase.conferenceDataDao().run {
+            deleteAllConferenceData()
+            storeConferenceData(*conferenceDataList.toTypedArray())
         }
     }
 
@@ -93,12 +105,5 @@ class ConferenceRepository(
         val currentDate = Date(System.currentTimeMillis())
         val conferenceDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(date)
         return requireNotNull(conferenceDate) < currentDate
-    }
-
-    private suspend fun addConferenceDataToDB(conferenceDataList: List<ConferenceData>) {
-        appDatabase.conferenceDataDao().run {
-            deleteAllConferenceData()
-            storeConferenceData(*conferenceDataList.toTypedArray())
-        }
     }
 }
