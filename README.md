@@ -3,13 +3,18 @@
 An app which displayes list of conferences happening all over the world sourced from
 [this](http://androidstudygroup.github.io/conferences/) website.
 
+### Install
+Get apk from [here](https://github.com/jitinsharma/android-conferences/blob/master/app-debug.apk)
+
+or build from source by running `./gradlew assembleDebug`
+
 ### Features
 - Display conferences with relevant details. ✅
 - Offline support. ✅
 - Filter conferences by cfp status and by country. ✅
 - CFP reminder.
 - New conference reminder.
-- ...
+
 
 ### Objectives for this project
 This project is being built with Jetpack Compose with following objectives in mind
