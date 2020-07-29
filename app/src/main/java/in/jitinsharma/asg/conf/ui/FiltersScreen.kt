@@ -48,9 +48,7 @@ fun FiltersScreen(
     countyList: List<Country>?
 ) {
     val store = remember { getKoin().get<Store<AppState>>() }
-    Card(
-        color = themeColors.secondary
-    ) {
+    Card(color = themeColors.secondary) {
         Column(modifier = Modifier.wrapContentSize()) {
             Box(
                 backgroundColor = themeColors.primary,

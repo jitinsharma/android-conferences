@@ -52,7 +52,7 @@ object NotificationHelper {
         return buildString {
             conferenceList.forEach {
                 append("- ${it.name}, ${it.country}")
-                appendln()
+                appendLine()
             }
         }
     }

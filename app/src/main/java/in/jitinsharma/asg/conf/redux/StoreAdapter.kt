@@ -9,9 +9,7 @@ import org.rekotlin.StoreType
 fun <T : StateType> StoreType<T>.observeAsState(): State<T?> {
     val state = state<T?> { null }
     val subscriber = BlockSubscriber<T> {
-        FrameManager.framed {
-            state.value = it
-        }
+        state.value = it
     }
     onActive {
         subscribe(subscriber)
