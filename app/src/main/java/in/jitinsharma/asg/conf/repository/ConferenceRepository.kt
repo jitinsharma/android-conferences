@@ -16,7 +16,9 @@ class ConferenceRepository(
 
     suspend fun loadConferenceData() {
         val conferenceDataList = getConferenceDataFromNetwork()
-        addConferenceDataToDB(conferenceDataList)
+        if (conferenceDataList.isNotEmpty()) {
+            addConferenceDataToDB(conferenceDataList)
+        }
     }
 
     suspend fun getConferenceDataFromNetwork(): List<ConferenceData> {
