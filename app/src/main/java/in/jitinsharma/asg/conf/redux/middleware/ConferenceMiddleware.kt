@@ -27,7 +27,6 @@ class ConferenceMiddleware(
             { action ->
                 when (action) {
                     is LoadConferences -> {
-                        println("received action to load conferences")
                         loadConferences(dispatchFunction)
                     }
                     is LoadCountries -> {

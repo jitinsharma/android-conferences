@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
@@ -26,11 +27,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        store.dispatch(LoadConferences())
         setContent {
             MaterialTheme(colors = themeColors) {
-                Box(backgroundColor = MaterialTheme.colors.primary) {
-                    store.dispatch(DisplayLoading())
-                    store.dispatch(LoadConferences())
+                store.dispatch(DisplayLoading())
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    backgroundColor = MaterialTheme.colors.primary
+                ) {
                     val appState = store.observeAsState()
                     Column(modifier = Modifier.fillMaxWidth().padding(all = 16.dp)) {
                         Header(modifier = Modifier.padding(bottom = 16.dp))
