@@ -1,6 +1,9 @@
 package `in`.jitinsharma.asg.conf.redux
 
-import androidx.compose.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.onActive
+import androidx.compose.runtime.state
 import org.rekotlin.BlockSubscriber
 import org.rekotlin.StateType
 import org.rekotlin.StoreType
@@ -13,9 +16,9 @@ fun <T : StateType> StoreType<T>.observeAsState(): State<T?> {
     }
     onActive {
         subscribe(subscriber)
-    }
-    onDispose {
-        unsubscribe(subscriber)
+        onDispose {
+            unsubscribe(subscriber)
+        }
     }
     return state
 }

@@ -5,22 +5,26 @@ import `in`.jitinsharma.asg.conf.redux.actions.*
 import `in`.jitinsharma.asg.conf.redux.state.AppState
 import `in`.jitinsharma.asg.conf.redux.state.FilterState
 import `in`.jitinsharma.asg.conf.utils.ThemedPreview
-import androidx.compose.Composable
-import androidx.compose.remember
-import androidx.compose.state
-import androidx.ui.core.Alignment
-import androidx.ui.core.Modifier
-import androidx.ui.foundation.*
-import androidx.ui.foundation.lazy.LazyColumnItems
-import androidx.ui.layout.*
-import androidx.ui.material.Card
-import androidx.ui.material.Checkbox
-import androidx.ui.material.MaterialTheme
-import androidx.ui.material.ripple.RippleIndication
-import androidx.ui.text.TextStyle
-import androidx.ui.text.font.FontWeight
+import androidx.compose.foundation.Box
+import androidx.compose.foundation.ContentGravity
+import androidx.compose.foundation.Text
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumnFor
+import androidx.compose.material.Card
+import androidx.compose.material.Checkbox
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.ripple.RippleIndication
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.ui.tooling.preview.Preview
-import androidx.ui.unit.dp
 import org.koin.java.KoinJavaComponent.getKoin
 import org.rekotlin.Store
 
@@ -31,7 +35,7 @@ fun FilterDialog(
     if (filterState.displayDialog) {
         val store = remember { getKoin().get<Store<AppState>>() }
         store.dispatch(LoadCountries())
-        Dialog(onCloseRequest = { store.dispatch(HideDialog()) }) {
+        Dialog(onDismissRequest = { store.dispatch(HideDialog()) }) {
             FiltersScreen(
                 cfpFilterChecked = filterState.cfpFilterChecked,
                 selectedCountries = filterState.selectedCountries,
@@ -48,7 +52,7 @@ fun FiltersScreen(
     countyList: List<Country>?
 ) {
     val store = remember { getKoin().get<Store<AppState>>() }
-    Card(color = themeColors.secondary) {
+    Card(backgroundColor = themeColors.secondary) {
         Column(modifier = Modifier.wrapContentSize()) {
             Box(
                 backgroundColor = themeColors.primary,
@@ -78,7 +82,7 @@ fun FiltersScreen(
 
             Spacer(modifier = Modifier.preferredHeight(4.dp))
 
-            val cfpFilterCheckState = state { cfpFilterChecked }
+            val cfpFilterCheckState = remember { mutableStateOf(cfpFilterChecked) }
             Box(Modifier.padding(start = 8.dp).clickable(
                 indication = RippleIndication(),
                 onClick = {
@@ -184,10 +188,11 @@ fun CountryList(
             )
         )
         Spacer(modifier = Modifier.preferredHeight(8.dp))
-        LazyColumnItems(items = countyList,
+        LazyColumnFor(items = countyList,
             modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically),
             itemContent = { country ->
-                val countryChecked = state { selectedCountries.contains(country) }
+                val countryChecked =
+                    remember { mutableStateOf(selectedCountries.contains(country)) }
                 Box(Modifier.clickable(
                     indication = RippleIndication(),
                     onClick = {

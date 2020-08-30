@@ -15,6 +15,6 @@ class ConferenceApplication : Application() {
             androidContext(this@ConferenceApplication)
             modules(conferenceModule)
         }
-        WorkManager.getInstance(this).enqueue(ConferenceUpdateWorker.getPeriodicRequest())
+        //WorkManager.getInstance(this).enqueue(ConferenceUpdateWorker.getPeriodicRequest())
     }
 }
