@@ -1,25 +1,24 @@
 package `in`.jitinsharma.asg.conf.ui
 
 import `in`.jitinsharma.asg.conf.model.ConferenceData
-import androidx.compose.Composable
-import androidx.ui.core.Modifier
-import androidx.ui.foundation.lazy.LazyColumnItems
-import androidx.ui.layout.padding
-import androidx.ui.unit.dp
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumnForIndexed
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun ConferenceCardList(
     conferenceDataList: List<ConferenceData>
 ) {
-    LazyColumnItems(items = conferenceDataList, itemContent = {
-        val index = conferenceDataList.indexOf(it)
+    LazyColumnForIndexed(items = conferenceDataList, itemContent = { index, item ->
         ConferenceCard(
             modifier = if (index == 0) {
                 Modifier.padding(top = 16.dp)
             } else {
                 Modifier.padding(top = 32.dp)
             },
-            conferenceData = it
+            conferenceData = item
         )
     })
 }

@@ -15,6 +15,7 @@ fun conferenceListReducer(
 ): ConferenceListState? {
     return when (action) {
         is DisplayConferences -> {
+            println("sending display conference event")
             conferenceListState.get().copy(
                 isLoading = false,
                 conferenceDataList = action.conferenceDataList,

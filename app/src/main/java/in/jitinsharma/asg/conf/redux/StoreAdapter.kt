@@ -1,6 +1,6 @@
 package `in`.jitinsharma.asg.conf.redux
 
-import androidx.compose.*
+import androidx.compose.runtime.*
 import org.rekotlin.BlockSubscriber
 import org.rekotlin.StateType
 import org.rekotlin.StoreType
