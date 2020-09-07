@@ -35,10 +35,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    kotlinOptions {
-        jvmTarget = '1.8'
-        useIR = true
-    }
     buildFeatures {
         compose true
     }
@@ -90,7 +86,7 @@ dependencies {
     implementation "org.rekotlin:rekotlin:1.0.4"
     implementation "org.koin:koin-androidx-scope:$koin_version"
     implementation "org.koin:koin-androidx-viewmodel:$koin_version"
-    implementation "androidx.datastore:datastore-preferences:1.0.0-SNAPSHOT"
+    implementation "androidx.datastore:datastore-preferences:1.0.0-alpha01"
 
     implementation "androidx.work:work-runtime-ktx:2.4.0"
 }
