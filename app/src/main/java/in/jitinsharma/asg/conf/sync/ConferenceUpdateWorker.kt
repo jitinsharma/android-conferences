@@ -10,6 +10,7 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkerParameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -39,7 +40,7 @@ class ConferenceUpdateWorker(appContext: Context, params: WorkerParameters) :
                     }
             }
             repository.addConferenceDataToDB(conferenceList)
-            return@withContext Result.Success()
+            return@withContext Result.success()
         }
     }
 

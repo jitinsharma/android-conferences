@@ -2,7 +2,7 @@
 buildscript {
     ext.kotlin_version = "1.4.0"
     ext.koin_version = '2.1.5'
-    def compose_release_version = "alpha02"
+    def compose_release_version = "alpha03"
     ext.compose_version = "1.0.0-$compose_release_version"
     ext.compose_compiler_extension_version = "1.0.0-$compose_release_version"
 
@@ -12,7 +12,7 @@ buildscript {
         maven { url "https://dl.bintray.com/kotlin/kotlin-eap/" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.0-alpha08'
+        classpath 'com.android.tools.build:gradle:4.2.0-alpha10'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.koin:koin-gradle-plugin:$koin_version"
 

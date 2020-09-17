@@ -16,7 +16,7 @@ fun LoadingView() {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
-        horizontalGravity = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CircularProgressIndicator(
             color = MaterialTheme.colors.secondary
