@@ -1,0 +1,13 @@
+name: Build Pull Request
+on: push
+
+jobs:
+  test_job:
+    name: AssembleDebugAPK
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses : actions/checkout@v2
+
+      - name: Assesmble Debug Apk
+        run: ./gradlew assembleDebug
