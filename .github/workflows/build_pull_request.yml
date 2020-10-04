@@ -2,7 +2,7 @@ name: Build Pull Request
 on: push
 
 jobs:
-  test_job:
+  assemble_debug_job:
     name: AssembleDebugAPK
     runs-on: ubuntu-latest
     steps:
@@ -22,7 +22,6 @@ jobs:
       - name: Assesmble Debug Apk
         run: ./gradlew assembleDebug
 
-
       - name: Uploading Test Reports
         if: ${{always()}}
         uses: actions/upload-artifact@v2
@@ -35,3 +34,30 @@ jobs:
         with:
           name: app
           path: app/build/outputs/apk/debug/**.apk
+
+  lint_job:
+    name: Android Lint
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Restore Cache
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Run Debug Lint
+        run: ./gradlew lintDebug
+
+      - name: Upload Lint Reports
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: lint-report
+          path: '**/build/reports/lint-results-*'
