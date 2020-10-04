@@ -6,8 +6,18 @@ jobs:
     name: AssembleDebugAPK
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Check out code of current branch
         uses : actions/checkout@v2
+
+      - name: Speed-up by Restoring Gradle Cache from Previous Builds
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{runner.os}}-gradle-${{hashFiles('**/*.gradle*')}}
+          restore-keys: |
+            ${{runner.os}}-gradle-
 
       - name: Assesmble Debug Apk
         run: ./gradlew assembleDebug
