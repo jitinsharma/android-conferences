@@ -19,3 +19,5 @@ class LoadCountries : Action
 class DisplayCountries(val countryList: List<Country>) : Action
 
 class FilterConferences(val cfpChecked: Boolean, val selectedCountries: List<Country>) : Action
+
+class DisplaySettings : Action

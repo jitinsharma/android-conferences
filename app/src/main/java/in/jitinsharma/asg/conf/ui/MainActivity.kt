@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         store.dispatch(LoadConferences())
         setContent {
             MaterialTheme(colors = themeColors) {
-                ConferencePage(store = store)
+                ConferenceApp(store = store)
             }
         }
     }

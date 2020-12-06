@@ -5,16 +5,13 @@ import `in`.jitinsharma.asg.conf.redux.actions.*
 import `in`.jitinsharma.asg.conf.redux.state.AppState
 import `in`.jitinsharma.asg.conf.redux.state.FilterState
 import `in`.jitinsharma.asg.conf.utils.ThemedPreview
-import androidx.compose.foundation.Box
-import androidx.compose.foundation.ContentGravity
-import androidx.compose.foundation.Text
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumnFor
-import androidx.compose.material.Card
-import androidx.compose.material.Checkbox
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material.*
 import androidx.compose.material.ripple.RippleIndication
+import androidx.compose.material.ripple.rememberRippleIndication
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -22,9 +19,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.ui.tooling.preview.Preview
 import org.koin.java.KoinJavaComponent.getKoin
 import org.rekotlin.Store
 
@@ -55,10 +52,10 @@ fun FiltersScreen(
     Card(backgroundColor = themeColors.secondary) {
         Column(modifier = Modifier.wrapContentSize()) {
             Box(
-                backgroundColor = themeColors.primary,
-                gravity = ContentGravity.Center,
-                padding = 8.dp,
-                modifier = Modifier.fillMaxWidth().gravity(align = Alignment.CenterHorizontally)
+                modifier = Modifier.background(color = themeColors.primary)
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally)
+                    .padding(8.dp)
             ) {
                 Text(
                     text = "FILTERS",
@@ -83,19 +80,21 @@ fun FiltersScreen(
             Spacer(modifier = Modifier.preferredHeight(4.dp))
 
             val cfpFilterCheckState = remember { mutableStateOf(cfpFilterChecked) }
-            Box(Modifier.padding(start = 8.dp).clickable(
-                indication = RippleIndication(),
-                onClick = {
-                    cfpFilterCheckState.value = cfpFilterCheckState.value.not()
-                }, enabled = true
-            ), children = {
+            Box(
+                Modifier.padding(start = 8.dp).clickable(
+                    indication = rememberRippleIndication(),
+                    onClick = {
+                        cfpFilterCheckState.value = cfpFilterCheckState.value.not()
+                    }, enabled = true
+                )
+            ) {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Checkbox(
                         checked = cfpFilterCheckState.value,
                         onCheckedChange = {
                             cfpFilterCheckState.value = cfpFilterCheckState.value.not()
                         },
-                        checkedColor = themeColors.primary
+                        colors = CheckboxConstants.defaultColors(checkedColor = themeColors.primary)
                     )
                     Text(
                         text = "Cfp Open",
@@ -104,7 +103,7 @@ fun FiltersScreen(
                         style = MaterialTheme.typography.body2
                     )
                 }
-            })
+            }
 
             Spacer(modifier = Modifier.preferredHeight(8.dp))
 
@@ -116,41 +115,43 @@ fun FiltersScreen(
             }
 
             Box(
-                backgroundColor = themeColors.primary,
-                padding = 8.dp
+                modifier = Modifier.background(color = themeColors.primary).padding(8.dp)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Box(Modifier.clickable(
-                        indication = RippleIndication(),
-                        onClick = { store.dispatch(HideDialog()) }),
-                        children = {
-                            Text(
-                                text = "CANCEL",
-                                modifier = Modifier.padding(start = 8.dp),
-                                color = themeColors.secondary,
-                                style = MaterialTheme.typography.button.merge(
-                                    other = TextStyle(
-                                        fontWeight = FontWeight.Bold
+                    Box(
+                        Modifier.clickable(
+                            indication = rememberRippleIndication(),
+                            onClick = { store.dispatch(HideDialog()) })
+                    ) {
+                        Text(
+                            text = "CANCEL",
+                            modifier = Modifier.padding(start = 8.dp),
+                            color = themeColors.secondary,
+                            style = MaterialTheme.typography.button.merge(
+                                other = TextStyle(
+                                    fontWeight = FontWeight.Bold
+                                )
+                            )
+                        )
+                    }
+                    Box(
+                        Modifier.clickable(
+                            indication = rememberRippleIndication(),
+                            onClick = {
+                                store.dispatch(SetCFPFilterCheck(cfpFilterCheckState.value))
+                                store.dispatch(SetSelectedCountries(selectedCountries))
+                                store.dispatch(HideDialog())
+                                store.dispatch(
+                                    FilterConferences(
+                                        cfpFilterCheckState.value,
+                                        selectedCountries
                                     )
                                 )
-                            )
-                        })
-                    Box(Modifier.clickable(
-                        indication = RippleIndication(),
-                        onClick = {
-                            store.dispatch(SetCFPFilterCheck(cfpFilterCheckState.value))
-                            store.dispatch(SetSelectedCountries(selectedCountries))
-                            store.dispatch(HideDialog())
-                            store.dispatch(
-                                FilterConferences(
-                                    cfpFilterCheckState.value,
-                                    selectedCountries
-                                )
-                            )
-                        }), children = {
+                            })
+                    ) {
                         Text(
                             text = "APPLY",
                             modifier = Modifier.padding(start = 8.dp),
@@ -161,7 +162,7 @@ fun FiltersScreen(
                                 )
                             )
                         )
-                    })
+                    }
                 }
             }
 
@@ -203,7 +204,7 @@ fun CountryList(
                             selectedCountries.remove(country)
                         }
                     }
-                ), children = {
+                )) {
                     Row(
                         modifier = Modifier.fillMaxWidth().padding(start = 8.dp, bottom = 4.dp)
                     ) {
@@ -217,7 +218,7 @@ fun CountryList(
                                     selectedCountries.remove(country)
                                 }
                             },
-                            checkedColor = themeColors.primary
+                            colors = CheckboxConstants.defaultColors(checkedColor = themeColors.primary)
                         )
                         Text(
                             text = country.name,
@@ -226,8 +227,9 @@ fun CountryList(
                             style = MaterialTheme.typography.body2
                         )
                     }
-                })
-            })
+                }
+            }
+        )
     }
 }
 

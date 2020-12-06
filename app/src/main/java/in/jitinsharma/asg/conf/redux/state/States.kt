@@ -6,7 +6,8 @@ import org.rekotlin.StateType
 
 data class AppState(
     val conferenceListState: ConferenceListState? = null,
-    val filterState: FilterState? = null
+    val filterState: FilterState? = null,
+    val settingsPageState: SettingsPageState? = null
 ) : StateType
 
 data class ConferenceListState(
@@ -22,3 +23,8 @@ data class FilterState(
     val cfpFilterChecked: Boolean = false,
     val selectedCountries: MutableList<Country> = mutableListOf()
 ) : StateType
+
+data class SettingsPageState(
+    val displayPage: Boolean = false
+)
+

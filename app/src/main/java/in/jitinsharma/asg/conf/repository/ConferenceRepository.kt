@@ -36,8 +36,9 @@ class ConferenceRepository(
                     conferenceData.isPast
                 }
         } catch (e: Exception) {
-            println(e)
-            return emptyList()
+            throw e
+            //println(e)
+            //return emptyList()
         }
     }
 
@@ -68,7 +69,9 @@ class ConferenceRepository(
             }
         }.trim()
         conferenceDataModel.id = conferenceDataModel.name + conferenceDataModel.city
-        conferenceDataModel.parseCfpAndStatusData(childNode(5).toString())
+        if (childNodeSize() > 5) {
+            conferenceDataModel.parseCfpAndStatusData(childNode(5).toString())
+        }
         return conferenceDataModel
     }
 
