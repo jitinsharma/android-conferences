@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Checkbox
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ripple.RippleIndication
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
@@ -40,7 +40,7 @@ fun SettingsPage() {
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable(
-                    indication = RippleIndication(),
+                    indication = rememberRipple(),
                     onClick = {
                         scope.launch {
                             appPreferences.setUpdatePreference(conferenceUpdateNotificationState.value.not())

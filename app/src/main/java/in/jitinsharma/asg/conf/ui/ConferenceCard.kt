@@ -12,7 +12,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.ripple.RippleIndication
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,7 +54,7 @@ fun ConferenceCard(
             ) {
                 Box(
                     Modifier.clickable(
-                        indication = RippleIndication(),
+                        indication = rememberRipple(),
                         onClick = { context.loadUrl(conferenceData.url) })
                 ) {
                     Text(
@@ -106,7 +106,7 @@ fun ConferenceCard(
             if (showCfp(conferenceData.cfpData)) {
                 val cfpData = conferenceData.cfpData!!
                 Box(Modifier.clickable(
-                    indication = RippleIndication(),
+                    indication = rememberRipple(),
                     onClick = { context.loadUrl(cfpData.cfpUrl) }
                 )) {
                     Text(

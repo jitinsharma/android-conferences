@@ -10,7 +10,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.material.*
-import androidx.compose.material.ripple.RippleIndication
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material.ripple.rememberRippleIndication
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -165,7 +165,6 @@ fun FiltersScreen(
                     }
                 }
             }
-
         }
     }
 }
@@ -195,7 +194,7 @@ fun CountryList(
                 val countryChecked =
                     remember { mutableStateOf(selectedCountries.contains(country)) }
                 Box(Modifier.clickable(
-                    indication = RippleIndication(),
+                    indication = rememberRipple(),
                     onClick = {
                         countryChecked.value = countryChecked.value.not()
                         if (countryChecked.value) {
