@@ -36,8 +36,9 @@ class ConferenceRepository(
                     conferenceData.isPast
                 }
         } catch (e: Exception) {
-            println(e)
-            return emptyList()
+            throw e
+            //println(e)
+            //return emptyList()
         }
     }
 
@@ -68,7 +69,9 @@ class ConferenceRepository(
             }
         }.trim()
         conferenceDataModel.id = conferenceDataModel.name + conferenceDataModel.city
-        conferenceDataModel.parseCfpAndStatusData(childNode(5).toString())
+        if (childNodeSize() > 5) {
+            conferenceDataModel.parseCfpAndStatusData(childNode(5).toString())
+        }
         return conferenceDataModel
     }
 
@@ -79,7 +82,7 @@ class ConferenceRepository(
                     val cfpData = ConferenceData.CfpData()
                     //TODO Try replacing matchers by parsing line with Jsoup
                     val cfpUrlMatcher =
-                        Pattern.compile("a href=(.*?)>", Pattern.DOTALL).matcher(line)
+                        Pattern.compile("href=(.*?)>", Pattern.DOTALL).matcher(line)
                     val cfpDateMatcher = Pattern.compile(">(.*?)<", Pattern.DOTALL).matcher(line)
                     while (cfpUrlMatcher.find()) {
                         val match = cfpUrlMatcher.group(1)

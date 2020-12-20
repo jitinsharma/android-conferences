@@ -1,26 +1,28 @@
 package `in`.jitinsharma.asg.conf.ui
 
-import `in`.jitinsharma.asg.conf.redux.actions.LoadConferences
-import `in`.jitinsharma.asg.conf.redux.state.AppState
+import `in`.jitinsharma.asg.conf.viewmodel.ConferenceViewModel
+import `in`.jitinsharma.asg.conf.viewmodel.FilterScreenViewModel
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.platform.setContent
-import androidx.lifecycle.lifecycleScope
-import org.koin.android.ext.android.inject
-import org.koin.core.parameter.parametersOf
-import org.rekotlin.Store
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
+@ExperimentalCoroutinesApi
 class MainActivity : AppCompatActivity() {
 
-    private val store: Store<AppState> by inject { parametersOf(lifecycleScope) }
+    private val conferenceViewModel by viewModel<ConferenceViewModel>()
+    private val filterScreenViewModel by viewModel<FilterScreenViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        store.dispatch(LoadConferences())
         setContent {
             MaterialTheme(colors = themeColors) {
-                ConferencePage(store = store)
+                ConferenceApp(
+                    conferenceViewModel = conferenceViewModel,
+                    filterScreenViewModel = filterScreenViewModel
+                )
             }
         }
     }

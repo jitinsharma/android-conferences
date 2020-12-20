@@ -5,30 +5,29 @@ import `in`.jitinsharma.asg.conf.model.ConferenceData
 import `in`.jitinsharma.asg.conf.utils.ThemedPreview
 import android.content.Context
 import android.content.Intent
-import androidx.compose.foundation.Box
-import androidx.compose.foundation.Icon
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ripple.RippleIndication
+import androidx.compose.material.Text
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.annotatedString
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import androidx.ui.tooling.preview.Preview
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -47,15 +46,17 @@ fun ConferenceCard(
         contentColor = MaterialTheme.colors.primary,
         modifier = modifier.wrapContentHeight(align = Alignment.CenterVertically)
     ) {
-        val context = ContextAmbient.current
+        val context = AmbientContext.current
         Column(modifier = Modifier.padding(all = 16.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Box(Modifier.clickable(
-                    indication = RippleIndication(),
-                    onClick = { context.loadUrl(conferenceData.url) }), children = {
+                Box(
+                    Modifier.clickable(
+                        indication = rememberRipple(),
+                        onClick = { context.loadUrl(conferenceData.url) })
+                ) {
                     Text(
                         text = conferenceData.name,
                         style = TextStyle(
@@ -64,12 +65,12 @@ fun ConferenceCard(
                             fontSize = TextUnit.Sp(18)
                         )
                     )
-                })
+                }
 
                 Row {
                     Icon(
                         modifier = Modifier.padding(end = 4.dp),
-                        asset = vectorResource(id = R.drawable.ic_baseline_calendar_today)
+                        imageVector = vectorResource(id = R.drawable.ic_baseline_calendar_today)
                     )
                     Text(
                         text = conferenceData.date,
@@ -84,7 +85,7 @@ fun ConferenceCard(
             Row {
                 Icon(
                     modifier = Modifier.padding(top = 4.dp, end = 4.dp),
-                    asset = vectorResource(
+                    imageVector = vectorResource(
                         id = R.drawable.ic_baseline_location_on
                     )
                 )
@@ -105,11 +106,11 @@ fun ConferenceCard(
             if (showCfp(conferenceData.cfpData)) {
                 val cfpData = conferenceData.cfpData!!
                 Box(Modifier.clickable(
-                    indication = RippleIndication(),
+                    indication = rememberRipple(),
                     onClick = { context.loadUrl(cfpData.cfpUrl) }
-                ), children = {
+                )) {
                     Text(
-                        text = annotatedString {
+                        text = buildAnnotatedString {
                             append("CFP closes on ")
                             pushStyle(
                                 SpanStyle(
@@ -122,7 +123,7 @@ fun ConferenceCard(
                         style = TextStyle(fontSize = TextUnit.Sp(12)),
                         modifier = Modifier.padding(top = 16.dp)
                     )
-                })
+                }
             }
         }
     }
