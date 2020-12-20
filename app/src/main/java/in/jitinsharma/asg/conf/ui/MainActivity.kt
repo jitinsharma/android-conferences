@@ -1,11 +1,11 @@
 package `in`.jitinsharma.asg.conf.ui
 
 import `in`.jitinsharma.asg.conf.viewmodel.ConferenceViewModel
+import `in`.jitinsharma.asg.conf.viewmodel.FilterScreenViewModel
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.platform.setContent
-import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -13,15 +13,16 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class MainActivity : AppCompatActivity() {
 
     private val conferenceViewModel by viewModel<ConferenceViewModel>()
+    private val filterScreenViewModel by viewModel<FilterScreenViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MaterialTheme(colors = themeColors) {
-                lifecycleScope.launchWhenStarted {
-                    conferenceViewModel.loadConferences()
-                }
-                ConferenceApp(conferenceViewModel = conferenceViewModel)
+                ConferenceApp(
+                    conferenceViewModel = conferenceViewModel,
+                    filterScreenViewModel = filterScreenViewModel
+                )
             }
         }
     }

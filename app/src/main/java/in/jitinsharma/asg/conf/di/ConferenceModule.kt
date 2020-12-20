@@ -6,6 +6,7 @@ import `in`.jitinsharma.asg.conf.redux.middleware.ConferenceMiddleware
 import `in`.jitinsharma.asg.conf.redux.reducer.appReducer
 import `in`.jitinsharma.asg.conf.repository.ConferenceRepository
 import `in`.jitinsharma.asg.conf.viewmodel.ConferenceViewModel
+import `in`.jitinsharma.asg.conf.viewmodel.FilterScreenViewModel
 import kotlinx.coroutines.CoroutineScope
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -29,4 +30,5 @@ val conferenceModule = module {
     }
     single { AppPreferences(context = androidApplication()) }
     viewModel { ConferenceViewModel(get()) }
+    viewModel { FilterScreenViewModel(get()) }
 }

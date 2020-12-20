@@ -1,6 +1,7 @@
 package `in`.jitinsharma.asg.conf.viewmodel
 
 import `in`.jitinsharma.asg.conf.model.ConferenceData
+import `in`.jitinsharma.asg.conf.model.Country
 import `in`.jitinsharma.asg.conf.repository.ConferenceRepository
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,6 +17,11 @@ class ConferenceViewModel(
     private var _uiState: MutableStateFlow<ConferenceListUiState> =
         MutableStateFlow(ConferenceListUiState.Loading)
     val uiState: StateFlow<ConferenceListUiState> = _uiState
+    private var originalConferenceList = listOf<ConferenceData>()
+
+    init {
+        loadConferences()
+    }
 
     fun loadConferences() {
         viewModelScope.launch(Dispatchers.IO) {
@@ -23,9 +29,27 @@ class ConferenceViewModel(
             val conferenceDataList = conferenceRepository.getConferenceDataList()
             if (conferenceDataList.isNotEmpty()) {
                 _uiState.value = ConferenceListUiState.Success(conferenceDataList)
+                originalConferenceList = conferenceDataList
             } else {
                 _uiState.value = ConferenceListUiState.Error
             }
+        }
+    }
+
+    fun filterConferences(cfpFilterChecked: Boolean, selectedCountries: List<Country>) {
+        if (!cfpFilterChecked && selectedCountries.isEmpty()) {
+            _uiState.value = ConferenceListUiState.Success(originalConferenceList)
+        } else {
+            val filteredConferences = originalConferenceList.filter {
+                if (cfpFilterChecked) {
+                    it.cfpData != null && it.cfpData!!.isCfpActive
+                } else {
+                    true
+                }
+            }.filter {
+                selectedCountries.contains(Country(it.country))
+            }
+            _uiState.value = ConferenceListUiState.Success(filteredConferences)
         }
     }
 }

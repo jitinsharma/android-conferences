@@ -1,10 +1,8 @@
 package `in`.jitinsharma.asg.conf.ui
 
 import `in`.jitinsharma.asg.conf.model.Country
-import `in`.jitinsharma.asg.conf.redux.actions.*
-import `in`.jitinsharma.asg.conf.redux.state.AppState
-import `in`.jitinsharma.asg.conf.redux.state.FilterState
 import `in`.jitinsharma.asg.conf.utils.ThemedPreview
+import `in`.jitinsharma.asg.conf.viewmodel.FilterScreenUiState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -22,33 +20,41 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import org.koin.java.KoinJavaComponent.getKoin
-import org.rekotlin.Store
 
 @Composable
 fun FilterDialog(
-    filterState: FilterState
+    filterScreenUiState: FilterScreenUiState,
+    onDismissRequest: () -> Unit,
+    onFilterRequest: (cfpFilterChecked: Boolean, selectedCountries: List<Country>) -> Unit
 ) {
-    if (filterState.displayDialog) {
-        val store = remember { getKoin().get<Store<AppState>>() }
-        store.dispatch(LoadCountries())
-        Dialog(onDismissRequest = { store.dispatch(HideDialog()) }) {
-            FiltersScreen(
-                cfpFilterChecked = filterState.cfpFilterChecked,
-                selectedCountries = filterState.selectedCountries,
-                countyList = filterState.countryList
-            )
+    //if (filterState.displayDialog) {
+    //val store = remember { getKoin().get<Store<AppState>>() }
+    //store.dispatch(LoadCountries())
+    Dialog(onDismissRequest = { onDismissRequest() }) {
+        when (filterScreenUiState) {
+            is FilterScreenUiState.Success -> {
+                FiltersScreen(
+                    cfpFilterChecked = filterScreenUiState.cfpFilterChecked,
+                    selectedCountries = filterScreenUiState.selectedCountries.toMutableList(),
+                    countyList = filterScreenUiState.countryList,
+                    onDismiss = onDismissRequest,
+                    onApply = onFilterRequest
+                )
+            }
         }
     }
+    //}
 }
 
 @Composable
 fun FiltersScreen(
     cfpFilterChecked: Boolean = false,
     selectedCountries: MutableList<Country>,
-    countyList: List<Country>?
+    countyList: List<Country>?,
+    onDismiss: () -> Unit,
+    onApply: (cfpFilterChecked: Boolean, selectedCountries: List<Country>) -> Unit
 ) {
-    val store = remember { getKoin().get<Store<AppState>>() }
+    //val store = remember { getKoin().get<Store<AppState>>() }
     Card(backgroundColor = themeColors.secondary) {
         Column(modifier = Modifier.wrapContentSize()) {
             Box(
@@ -94,7 +100,10 @@ fun FiltersScreen(
                         onCheckedChange = {
                             cfpFilterCheckState.value = cfpFilterCheckState.value.not()
                         },
-                        colors = CheckboxConstants.defaultColors(checkedColor = themeColors.primary)
+                        colors = CheckboxDefaults.colors(
+                            checkedColor = MaterialTheme.colors.primary,
+                            uncheckedColor = MaterialTheme.colors.primary
+                        )
                     )
                     Text(
                         text = "Cfp Open",
@@ -124,7 +133,7 @@ fun FiltersScreen(
                     Box(
                         Modifier.clickable(
                             indication = rememberRippleIndication(),
-                            onClick = { store.dispatch(HideDialog()) })
+                            onClick = { onDismiss() })
                     ) {
                         Text(
                             text = "CANCEL",
@@ -140,17 +149,7 @@ fun FiltersScreen(
                     Box(
                         Modifier.clickable(
                             indication = rememberRippleIndication(),
-                            onClick = {
-                                store.dispatch(SetCFPFilterCheck(cfpFilterCheckState.value))
-                                store.dispatch(SetSelectedCountries(selectedCountries))
-                                store.dispatch(HideDialog())
-                                store.dispatch(
-                                    FilterConferences(
-                                        cfpFilterCheckState.value,
-                                        selectedCountries
-                                    )
-                                )
-                            })
+                            onClick = { onApply(cfpFilterCheckState.value, selectedCountries) })
                     ) {
                         Text(
                             text = "APPLY",
@@ -217,7 +216,10 @@ fun CountryList(
                                     selectedCountries.remove(country)
                                 }
                             },
-                            colors = CheckboxConstants.defaultColors(checkedColor = themeColors.primary)
+                            colors = CheckboxDefaults.colors(
+                                checkedColor = MaterialTheme.colors.primary,
+                                uncheckedColor = MaterialTheme.colors.primary
+                            )
                         )
                         Text(
                             text = country.name,
@@ -245,7 +247,9 @@ fun FilterScreenPreview() {
                 Country("Japan"),
                 Country("Poland")
             ),
-            selectedCountries = mutableListOf()
+            selectedCountries = mutableListOf(),
+            onDismiss = {},
+            onApply = { _, _ -> }
         )
     }
 }
