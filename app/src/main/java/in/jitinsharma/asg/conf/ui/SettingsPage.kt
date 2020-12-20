@@ -2,7 +2,7 @@ package `in`.jitinsharma.asg.conf.ui
 
 import `in`.jitinsharma.asg.conf.preferences.AppPreferences
 import `in`.jitinsharma.asg.conf.utils.ThemedPreview
-import androidx.compose.foundation.Text
+import androidx.compose.material.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Checkbox

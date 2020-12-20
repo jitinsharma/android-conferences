@@ -5,11 +5,11 @@ import `in`.jitinsharma.asg.conf.model.ConferenceData
 import `in`.jitinsharma.asg.conf.utils.ThemedPreview
 import android.content.Context
 import android.content.Intent
-import androidx.compose.foundation.Icon
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.ripple.rememberRipple
@@ -17,11 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.annotatedString
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,7 +46,7 @@ fun ConferenceCard(
         contentColor = MaterialTheme.colors.primary,
         modifier = modifier.wrapContentHeight(align = Alignment.CenterVertically)
     ) {
-        val context = ContextAmbient.current
+        val context = AmbientContext.current
         Column(modifier = Modifier.padding(all = 16.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -110,7 +110,7 @@ fun ConferenceCard(
                     onClick = { context.loadUrl(cfpData.cfpUrl) }
                 )) {
                     Text(
-                        text = annotatedString {
+                        text = buildAnnotatedString {
                             append("CFP closes on ")
                             pushStyle(
                                 SpanStyle(
