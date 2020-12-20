@@ -5,7 +5,8 @@ import `in`.jitinsharma.asg.conf.utils.ThemedPreview
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.BottomSheetScaffold
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -17,6 +18,7 @@ import androidx.compose.ui.unit.dp
 fun Header(
     modifier: Modifier = Modifier,
     onFilterClicked: () -> Unit,
+    onAndroidIconClicked: () -> Unit,
     onSettingsClicked: () -> Unit,
 ) {
     Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -35,7 +37,7 @@ fun Header(
         Box(
             Modifier.clickable(
                 indication = rememberRipple(),
-                onClick = {})
+                onClick = { onAndroidIconClicked() })
         ) {
             Image(
                 imageVector = vectorResource(
@@ -51,7 +53,7 @@ fun Header(
             Image(
                 modifier = Modifier.padding(top = 12.dp),
                 imageVector = vectorResource(
-                    id = R.drawable.ic_baseline_notifications_none
+                    id = R.drawable.ic_baseline_settings
                 )
             )
         }
@@ -64,6 +66,7 @@ fun HeaderPreview() {
     ThemedPreview {
         Header(
             onFilterClicked = {},
+            onAndroidIconClicked = {},
             onSettingsClicked = {}
         )
     }

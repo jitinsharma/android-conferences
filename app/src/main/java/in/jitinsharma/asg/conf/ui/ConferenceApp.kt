@@ -11,6 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalCoroutinesApi
@@ -24,21 +25,35 @@ fun ConferenceApp(
     ) {
         Column(modifier = Modifier.fillMaxWidth().padding(all = 16.dp)) {
             val filterScreenDialogState = remember { mutableStateOf(false) }
+            val navController = rememberNavController()
+            val conferenceUiState = conferenceViewModel.uiState.collectAsState()
+
             Header(
                 modifier = Modifier.padding(bottom = 16.dp),
                 onFilterClicked = {
                     filterScreenDialogState.value = filterScreenDialogState.value.not()
                 },
-                onSettingsClicked = {}
-            )
-
-            val conferenceUiState = conferenceViewModel.uiState.collectAsState()
-            ConferencePage(
-                conferenceListUiState = conferenceUiState.value,
-                onRetryClick = {
-                    conferenceViewModel.loadConferences()
+                onAndroidIconClicked = {
+                    navController.navigate(ConferenceListScreen) {
+                        popUpTo(SettingsScreen) {}
+                    }
+                },
+                onSettingsClicked = {
+                    navController.navigate(SettingsScreen)
                 }
             )
+
+            NavHost(navController = navController, startDestination = ConferenceListScreen) {
+                composable(ConferenceListScreen) {
+                    ConferencePage(
+                        conferenceListUiState = conferenceUiState.value,
+                        onRetryClick = {
+                            conferenceViewModel.loadConferences()
+                        }
+                    )
+                }
+                composable(SettingsScreen) { SettingsPage() }
+            }
 
             if (filterScreenDialogState.value) {
                 val filterScreenUiState = filterScreenViewModel.uiState.collectAsState()
@@ -57,3 +72,6 @@ fun ConferenceApp(
         }
     }
 }
+
+const val ConferenceListScreen = "ConferenceListScreen"
+const val SettingsScreen = "SettingsScreen"
