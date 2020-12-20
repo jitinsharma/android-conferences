@@ -21,20 +21,20 @@ jobs:
           java-version: 11
 
       - name: Speed-up by Restoring Gradle Cache from Previous Builds
-          uses: actions/cache@v2
-          with:
-            path: |
-              ~/.gradle/caches
-              ~/.gradle/wrapper
-            key: ${{runner.os}}-gradle-${{hashFiles('**/*.gradle*')}}
-            restore-keys: |
-              ${{runner.os}}-gradle-
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{runner.os}}-gradle-${{hashFiles('**/*.gradle*')}}
+          restore-keys: |
+            ${{runner.os}}-gradle-
 
       - name: Build project
         run: ./gradlew assembleDebug
 
       - name: Uploading APK
-          uses: actions/upload-artifact@v2
-          with:
-            name: app
-            path: app/build/outputs/apk/debug/**.apk
+        uses: actions/upload-artifact@v2
+        with:
+          name: app
+          path: app/build/outputs/apk/debug/**.apk
