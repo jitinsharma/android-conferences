@@ -6,10 +6,9 @@ import `in`.jitinsharma.asg.conf.viewmodel.FilterScreenUiState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumnFor
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.material.ripple.rememberRippleIndication
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,9 +26,6 @@ fun FilterDialog(
     onDismissRequest: () -> Unit,
     onFilterRequest: (cfpFilterChecked: Boolean, selectedCountries: List<Country>) -> Unit
 ) {
-    //if (filterState.displayDialog) {
-    //val store = remember { getKoin().get<Store<AppState>>() }
-    //store.dispatch(LoadCountries())
     Dialog(onDismissRequest = { onDismissRequest() }) {
         when (filterScreenUiState) {
             is FilterScreenUiState.Success -> {
@@ -43,7 +39,6 @@ fun FilterDialog(
             }
         }
     }
-    //}
 }
 
 @Composable
@@ -54,7 +49,6 @@ fun FiltersScreen(
     onDismiss: () -> Unit,
     onApply: (cfpFilterChecked: Boolean, selectedCountries: List<Country>) -> Unit
 ) {
-    //val store = remember { getKoin().get<Store<AppState>>() }
     Card(backgroundColor = themeColors.secondary) {
         Column(modifier = Modifier.wrapContentSize()) {
             Box(
@@ -88,7 +82,7 @@ fun FiltersScreen(
             val cfpFilterCheckState = remember { mutableStateOf(cfpFilterChecked) }
             Box(
                 Modifier.padding(start = 8.dp).clickable(
-                    indication = rememberRippleIndication(),
+                    indication = rememberRipple(),
                     onClick = {
                         cfpFilterCheckState.value = cfpFilterCheckState.value.not()
                     }, enabled = true
@@ -132,7 +126,7 @@ fun FiltersScreen(
                 ) {
                     Box(
                         Modifier.clickable(
-                            indication = rememberRippleIndication(),
+                            indication = rememberRipple(),
                             onClick = { onDismiss() })
                     ) {
                         Text(
@@ -148,7 +142,7 @@ fun FiltersScreen(
                     }
                     Box(
                         Modifier.clickable(
-                            indication = rememberRippleIndication(),
+                            indication = rememberRipple(),
                             onClick = { onApply(cfpFilterCheckState.value, selectedCountries) })
                     ) {
                         Text(
@@ -187,50 +181,51 @@ fun CountryList(
             )
         )
         Spacer(modifier = Modifier.preferredHeight(8.dp))
-        LazyColumnFor(items = countyList,
-            modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically),
-            itemContent = { country ->
-                val countryChecked =
-                    remember { mutableStateOf(selectedCountries.contains(country)) }
-                Box(Modifier.clickable(
-                    indication = rememberRipple(),
-                    onClick = {
-                        countryChecked.value = countryChecked.value.not()
-                        if (countryChecked.value) {
-                            selectedCountries.add(country)
-                        } else {
-                            selectedCountries.remove(country)
+        LazyColumn(modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically)) {
+            items(items = countyList,
+                itemContent = { country ->
+                    val countryChecked =
+                        remember { mutableStateOf(selectedCountries.contains(country)) }
+                    Box(Modifier.clickable(
+                        indication = rememberRipple(),
+                        onClick = {
+                            countryChecked.value = countryChecked.value.not()
+                            if (countryChecked.value) {
+                                selectedCountries.add(country)
+                            } else {
+                                selectedCountries.remove(country)
+                            }
+                        }
+                    )) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(start = 8.dp, bottom = 4.dp)
+                        ) {
+                            Checkbox(
+                                checked = countryChecked.value,
+                                onCheckedChange = {
+                                    countryChecked.value = countryChecked.value.not()
+                                    if (countryChecked.value) {
+                                        selectedCountries.add(country)
+                                    } else {
+                                        selectedCountries.remove(country)
+                                    }
+                                },
+                                colors = CheckboxDefaults.colors(
+                                    checkedColor = MaterialTheme.colors.primary,
+                                    uncheckedColor = MaterialTheme.colors.primary
+                                )
+                            )
+                            Text(
+                                text = country.name,
+                                modifier = Modifier.padding(start = 8.dp, top = 2.dp),
+                                color = themeColors.primary,
+                                style = MaterialTheme.typography.body2
+                            )
                         }
                     }
-                )) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(start = 8.dp, bottom = 4.dp)
-                    ) {
-                        Checkbox(
-                            checked = countryChecked.value,
-                            onCheckedChange = {
-                                countryChecked.value = countryChecked.value.not()
-                                if (countryChecked.value) {
-                                    selectedCountries.add(country)
-                                } else {
-                                    selectedCountries.remove(country)
-                                }
-                            },
-                            colors = CheckboxDefaults.colors(
-                                checkedColor = MaterialTheme.colors.primary,
-                                uncheckedColor = MaterialTheme.colors.primary
-                            )
-                        )
-                        Text(
-                            text = country.name,
-                            modifier = Modifier.padding(start = 8.dp, top = 2.dp),
-                            color = themeColors.primary,
-                            style = MaterialTheme.typography.body2
-                        )
-                    }
                 }
-            }
-        )
+            )
+        }
     }
 }
 
