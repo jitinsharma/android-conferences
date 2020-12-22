@@ -11,6 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.compose.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -34,12 +35,14 @@ fun ConferenceApp(
                     filterScreenDialogState.value = filterScreenDialogState.value.not()
                 },
                 onAndroidIconClicked = {
-                    navController.navigate(ConferenceListScreen) {
-                        popUpTo(SettingsScreen) {}
+                    if (navController.currentRoute != ConferenceListScreen) {
+                        navController.navigate(ConferenceListScreen)
                     }
                 },
                 onSettingsClicked = {
-                    navController.navigate(SettingsScreen)
+                    if (navController.currentRoute != SettingsScreen) {
+                        navController.navigate(SettingsScreen)
+                    }
                 }
             )
 
@@ -72,6 +75,8 @@ fun ConferenceApp(
         }
     }
 }
+
+private val NavController.currentRoute get() = currentDestination?.arguments?.get(KEY_ROUTE)?.defaultValue.toString()
 
 const val ConferenceListScreen = "ConferenceListScreen"
 const val SettingsScreen = "SettingsScreen"
