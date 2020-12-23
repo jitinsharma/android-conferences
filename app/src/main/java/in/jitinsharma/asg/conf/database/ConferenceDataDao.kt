@@ -1,10 +1,7 @@
 package `in`.jitinsharma.asg.conf.database
 
 import `in`.jitinsharma.asg.conf.model.ConferenceData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -18,4 +15,10 @@ interface ConferenceDataDao {
 
     @Query("DELETE FROM conferenceData")
     suspend fun deleteAllConferenceData()
+
+    @Transaction
+    suspend fun replaceAndStoreConferenceData(vararg conferenceData: ConferenceData) {
+        deleteAllConferenceData()
+        storeConferenceData(conferenceData = conferenceData)
+    }
 }

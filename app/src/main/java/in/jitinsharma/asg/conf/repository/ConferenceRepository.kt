@@ -46,8 +46,7 @@ class ConferenceRepository(
 
     suspend fun addConferenceDataToDB(conferenceDataList: List<ConferenceData>) {
         appDatabase.conferenceDataDao().run {
-            deleteAllConferenceData()
-            storeConferenceData(*conferenceDataList.toTypedArray())
+            replaceAndStoreConferenceData(*conferenceDataList.toTypedArray())
         }
     }
 
