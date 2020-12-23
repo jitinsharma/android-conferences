@@ -5,12 +5,13 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ConferenceDataDao {
 
     @Query("SELECT * FROM conferenceData")
-    suspend fun getConferenceDataList(): List<ConferenceData>
+    fun getConferenceDataList(): Flow<List<ConferenceData>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun storeConferenceData(vararg conferenceData: ConferenceData)

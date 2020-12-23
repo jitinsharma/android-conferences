@@ -9,7 +9,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkerParameters
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinApiExtension
 import org.koin.core.component.KoinComponent
@@ -26,7 +26,7 @@ class ConferenceUpdateWorker(appContext: Context, params: WorkerParameters) :
     override suspend fun doWork(): Result {
         return withContext(Dispatchers.IO) {
             val conferenceList = repository.getConferenceDataFromNetwork()
-            val storedConferenceList = repository.getConferenceDataList()
+            val storedConferenceList = repository.getConferenceDataList().first()
             val diff = conferenceList.filterNot { storedConferenceList.contains(it) }
             if (diff.isNotEmpty()) {
                 appPreferences

@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class ConferenceViewModel(
@@ -26,12 +27,15 @@ class ConferenceViewModel(
     fun loadConferences() {
         viewModelScope.launch(Dispatchers.IO) {
             conferenceRepository.loadConferenceData()
-            val conferenceDataList = conferenceRepository.getConferenceDataList()
-            if (conferenceDataList.isNotEmpty()) {
-                _uiState.value = ConferenceListUiState.Success(conferenceDataList)
-                originalConferenceList = conferenceDataList
-            } else {
-                _uiState.value = ConferenceListUiState.Error
+            val conferenceDataListFlow = conferenceRepository.getConferenceDataList()
+            conferenceDataListFlow.collect { conferenceDataList ->
+                println("flow emission")
+                if (conferenceDataList.isNotEmpty()) {
+                    _uiState.value = ConferenceListUiState.Success(conferenceDataList)
+                    originalConferenceList = conferenceDataList
+                } else {
+                    _uiState.value = ConferenceListUiState.Error
+                }
             }
         }
     }

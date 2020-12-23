@@ -3,6 +3,8 @@ package `in`.jitinsharma.asg.conf.repository
 import `in`.jitinsharma.asg.conf.database.AppDatabase
 import `in`.jitinsharma.asg.conf.model.ConferenceData
 import `in`.jitinsharma.asg.conf.network.getHTMLData
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import org.jsoup.nodes.Node
 import org.jsoup.nodes.TextNode
 import java.text.SimpleDateFormat
@@ -49,8 +51,8 @@ class ConferenceRepository(
         }
     }
 
-    suspend fun getConferenceDataList(): List<ConferenceData> =
-        appDatabase.conferenceDataDao().getConferenceDataList()
+    fun getConferenceDataList(): Flow<List<ConferenceData>> =
+        appDatabase.conferenceDataDao().getConferenceDataList().distinctUntilChanged()
 
     private fun Node.mapToConferenceDataModel(): ConferenceData {
         val conferenceDataModel = ConferenceData()

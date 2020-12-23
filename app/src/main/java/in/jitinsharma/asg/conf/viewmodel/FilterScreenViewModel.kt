@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class FilterScreenViewModel(
@@ -24,11 +25,12 @@ class FilterScreenViewModel(
 
     fun loadCountries() {
         viewModelScope.launch(Dispatchers.IO) {
-            val conferenceDataList = conferenceRepository.getConferenceDataList()
-            val countries = conferenceDataList.mapTo(ArraySet()) { countryName ->
-                Country(name = countryName.country)
-            }.toList()
-            _uiState.value = FilterScreenUiState.Success(countryList = countries)
+            conferenceRepository.getConferenceDataList().collect { conferenceDataList ->
+                val countries = conferenceDataList.mapTo(ArraySet()) { countryName ->
+                    Country(name = countryName.country)
+                }.toList()
+                _uiState.value = FilterScreenUiState.Success(countryList = countries)
+            }
         }
     }
 
