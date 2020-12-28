@@ -39,8 +39,6 @@ class ConferenceRepository(
                 }
         } catch (e: Exception) {
             throw e
-            //println(e)
-            //return emptyList()
         }
     }
 
