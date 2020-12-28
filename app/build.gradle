@@ -68,6 +68,8 @@ dependencies {
     implementation "androidx.compose.foundation:foundation:$compose_version"
     testImplementation 'junit:junit:4.13.1'
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.2'
+    testImplementation "org.mockito:mockito-core:3.6.28"
+    testImplementation 'org.mockito:mockito-inline:3.6.28'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation 'org.jsoup:jsoup:1.13.1'
