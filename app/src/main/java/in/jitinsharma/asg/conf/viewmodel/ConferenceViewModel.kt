@@ -3,9 +3,10 @@ package `in`.jitinsharma.asg.conf.viewmodel
 import `in`.jitinsharma.asg.conf.model.ConferenceData
 import `in`.jitinsharma.asg.conf.model.Country
 import `in`.jitinsharma.asg.conf.repository.ConferenceRepository
+import `in`.jitinsharma.asg.conf.utils.AppDispatchers
+import `in`.jitinsharma.asg.conf.utils.DispatcherProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -13,7 +14,8 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class ConferenceViewModel(
-    private val conferenceRepository: ConferenceRepository
+    private val conferenceRepository: ConferenceRepository,
+    private val dispatcherProvider: DispatcherProvider = AppDispatchers
 ) : ViewModel() {
 
     private var _uiState: MutableStateFlow<ConferenceListUiState> =
@@ -26,7 +28,7 @@ class ConferenceViewModel(
     }
 
     fun loadConferences() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(dispatcherProvider.io) {
             conferenceRepository.getConferenceDataList()
                 .catch {
                     _uiState.value = ConferenceListUiState.Error

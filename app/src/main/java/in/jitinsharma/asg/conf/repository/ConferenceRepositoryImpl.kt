@@ -12,18 +12,18 @@ import java.util.*
 import java.util.regex.Pattern
 import kotlin.collections.ArrayList
 
-class ConferenceRepository(
+class ConferenceRepositoryImpl(
     private val appDatabase: AppDatabase
-) {
+) : ConferenceRepository {
 
-    suspend fun loadConferenceData() {
+    override suspend fun loadConferenceData() {
         val conferenceDataList = getConferenceDataFromNetwork()
         if (conferenceDataList.isNotEmpty()) {
             addConferenceDataToDB(conferenceDataList)
         }
     }
 
-    suspend fun getConferenceDataFromNetwork(): List<ConferenceData> {
+    override suspend fun getConferenceDataFromNetwork(): List<ConferenceData> {
         try {
             val document = getHTMLData()
             val conferenceListElement =
@@ -42,13 +42,12 @@ class ConferenceRepository(
         }
     }
 
-    suspend fun addConferenceDataToDB(conferenceDataList: List<ConferenceData>) {
-        appDatabase.conferenceDataDao().run {
-            replaceAndStoreConferenceData(*conferenceDataList.toTypedArray())
-        }
+    override suspend fun addConferenceDataToDB(conferenceDataList: List<ConferenceData>) {
+        appDatabase.conferenceDataDao()
+            .replaceAndStoreConferenceData(*conferenceDataList.toTypedArray())
     }
 
-    fun getConferenceDataList(): Flow<List<ConferenceData>> =
+    override fun getConferenceDataList(): Flow<List<ConferenceData>> =
         appDatabase.conferenceDataDao().getConferenceDataList().distinctUntilChanged()
 
     private fun Node.mapToConferenceDataModel(): ConferenceData {
@@ -110,4 +109,11 @@ class ConferenceRepository(
         val conferenceDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(date)
         return requireNotNull(conferenceDate) < currentDate
     }
+}
+
+interface ConferenceRepository {
+    suspend fun loadConferenceData()
+    suspend fun getConferenceDataFromNetwork(): List<ConferenceData>
+    suspend fun addConferenceDataToDB(conferenceDataList: List<ConferenceData>)
+    fun getConferenceDataList(): Flow<List<ConferenceData>>
 }
