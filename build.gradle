@@ -2,7 +2,7 @@
 buildscript {
     ext.kotlin_version = "1.4.21"
     ext.koin_version = '2.2.1'
-    def compose_release_version = "alpha09"
+    def compose_release_version = "alpha10"
     ext.compose_version = "1.0.0-$compose_release_version"
     ext.compose_compiler_extension_version = "1.0.0-$compose_release_version"
 
@@ -10,10 +10,9 @@ buildscript {
         google()
         mavenCentral()
         jcenter()
-        maven { url "https://dl.bintray.com/kotlin/kotlin-eap/" }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.0-alpha03'
+        classpath 'com.android.tools.build:gradle:7.0.0-alpha04'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.koin:koin-gradle-plugin:$koin_version"
 
@@ -27,7 +26,6 @@ allprojects {
         google()
         mavenCentral()
         jcenter()
-        maven { url 'https://androidx.dev/snapshots/builds/6639139/artifacts/repository' }
         maven { url "https://dl.bintray.com/kotlin/kotlin-eap/" }
     }
 }

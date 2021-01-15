@@ -23,7 +23,7 @@ class FilterScreenViewModel(
         loadCountries()
     }
 
-    fun loadCountries() {
+    private fun loadCountries() {
         viewModelScope.launch(Dispatchers.IO) {
             conferenceRepository.getConferenceDataList().collect { conferenceDataList ->
                 val countries = conferenceDataList.mapTo(ArraySet()) { countryName ->
