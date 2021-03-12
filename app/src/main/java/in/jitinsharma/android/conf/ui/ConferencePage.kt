@@ -9,7 +9,7 @@ fun ConferencePage(
     conferenceListUiState: ConferenceListUiState,
     onRetryClick: () -> Unit
 ) {
-    Crossfade(current = conferenceListUiState) { uiState ->
+    Crossfade(targetState = conferenceListUiState) { uiState ->
         when (uiState) {
             is ConferenceListUiState.Success -> {
                 ConferenceCardList(conferenceDataList = uiState.conferenceList)

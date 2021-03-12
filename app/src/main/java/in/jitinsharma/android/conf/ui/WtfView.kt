@@ -17,8 +17,8 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun WtfView(
@@ -40,7 +40,7 @@ fun WtfView(
                 pop()
             },
             color = MaterialTheme.colors.secondary,
-            style = TextStyle(fontSize = TextUnit.Sp(32))
+            style = TextStyle(fontSize = 32.sp)
         )
         Button(
             modifier = Modifier.padding(top = 8.dp),

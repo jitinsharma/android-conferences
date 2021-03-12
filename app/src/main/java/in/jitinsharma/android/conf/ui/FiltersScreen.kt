@@ -7,8 +7,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,7 +52,8 @@ fun FiltersScreen(
     Card(backgroundColor = themeColors.secondary) {
         Column(modifier = Modifier.wrapContentSize()) {
             Box(
-                modifier = Modifier.background(color = themeColors.primary)
+                modifier = Modifier
+                    .background(color = themeColors.primary)
                     .fillMaxWidth()
                     .align(Alignment.CenterHorizontally)
                     .padding(8.dp)
@@ -64,7 +65,7 @@ fun FiltersScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.preferredHeight(4.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             Text(
                 text = "Cfp Status",
@@ -77,16 +78,17 @@ fun FiltersScreen(
                 )
             )
 
-            Spacer(modifier = Modifier.preferredHeight(4.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             val cfpFilterCheckState = remember { mutableStateOf(cfpFilterChecked) }
             Box(
-                Modifier.padding(start = 8.dp).clickable(
-                    indication = rememberRipple(),
-                    onClick = {
-                        cfpFilterCheckState.value = cfpFilterCheckState.value.not()
-                    }, enabled = true
-                )
+                Modifier
+                    .padding(start = 8.dp)
+                    .clickable(
+                        onClick = {
+                            cfpFilterCheckState.value = cfpFilterCheckState.value.not()
+                        }, enabled = true
+                    )
             ) {
                 Row(modifier = Modifier.fillMaxWidth()) {
                     Checkbox(
@@ -108,7 +110,7 @@ fun FiltersScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.preferredHeight(8.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
             countyList?.let {
                 CountryList(
@@ -118,7 +120,9 @@ fun FiltersScreen(
             }
 
             Box(
-                modifier = Modifier.background(color = themeColors.primary).padding(8.dp)
+                modifier = Modifier
+                    .background(color = themeColors.primary)
+                    .padding(8.dp)
             ) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -126,7 +130,6 @@ fun FiltersScreen(
                 ) {
                     Box(
                         Modifier.clickable(
-                            indication = rememberRipple(),
                             onClick = { onDismiss() })
                     ) {
                         Text(
@@ -142,7 +145,6 @@ fun FiltersScreen(
                     }
                     Box(
                         Modifier.clickable(
-                            indication = rememberRipple(),
                             onClick = { onApply(cfpFilterCheckState.value, selectedCountries) })
                     ) {
                         Text(
@@ -168,7 +170,7 @@ fun CountryList(
     selectedCountries: MutableList<Country>
 ) {
     Column(
-        modifier = Modifier.preferredHeight(360.dp)
+        modifier = Modifier.height(360.dp)
     ) {
         Text(
             text = "Countries",
@@ -180,14 +182,13 @@ fun CountryList(
                 )
             )
         )
-        Spacer(modifier = Modifier.preferredHeight(8.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         LazyColumn(modifier = Modifier.wrapContentHeight(align = Alignment.CenterVertically)) {
             items(items = countyList,
                 itemContent = { country ->
                     val countryChecked =
                         remember { mutableStateOf(selectedCountries.contains(country)) }
                     Box(Modifier.clickable(
-                        indication = rememberRipple(),
                         onClick = {
                             countryChecked.value = countryChecked.value.not()
                             if (countryChecked.value) {
@@ -198,7 +199,9 @@ fun CountryList(
                         }
                     )) {
                         Row(
-                            modifier = Modifier.fillMaxWidth().padding(start = 8.dp, bottom = 4.dp)
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 8.dp, bottom = 4.dp)
                         ) {
                             Checkbox(
                                 checked = countryChecked.value,

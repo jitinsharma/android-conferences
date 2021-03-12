@@ -12,21 +12,20 @@ import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.AmbientContext
-import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import java.text.SimpleDateFormat
 import java.util.*
@@ -46,7 +45,7 @@ fun ConferenceCard(
         contentColor = MaterialTheme.colors.primary,
         modifier = modifier.wrapContentHeight(align = Alignment.CenterVertically)
     ) {
-        val context = AmbientContext.current
+        val context = LocalContext.current
         Column(modifier = Modifier.padding(all = 16.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -54,7 +53,6 @@ fun ConferenceCard(
             ) {
                 Box(
                     Modifier.clickable(
-                        indication = rememberRipple(),
                         onClick = { context.loadUrl(conferenceData.url) })
                 ) {
                     Text(
@@ -62,7 +60,7 @@ fun ConferenceCard(
                         style = TextStyle(
                             textDecoration = TextDecoration.Underline,
                             fontWeight = FontWeight.Bold,
-                            fontSize = TextUnit.Sp(18)
+                            fontSize = 18.sp
                         )
                     )
                 }
@@ -70,13 +68,14 @@ fun ConferenceCard(
                 Row {
                     Icon(
                         modifier = Modifier.padding(end = 4.dp),
-                        imageVector = vectorResource(id = R.drawable.ic_baseline_calendar_today)
+                        painter = painterResource(id = R.drawable.ic_baseline_calendar_today),
+                        contentDescription = null
                     )
                     Text(
                         text = conferenceData.date,
                         style = TextStyle(
                             fontWeight = FontWeight.Bold,
-                            fontSize = TextUnit.Sp(12)
+                            fontSize = 12.sp
                         )
                     )
                 }
@@ -85,9 +84,10 @@ fun ConferenceCard(
             Row {
                 Icon(
                     modifier = Modifier.padding(top = 4.dp, end = 4.dp),
-                    imageVector = vectorResource(
+                    painter = painterResource(
                         id = R.drawable.ic_baseline_location_on
-                    )
+                    ),
+                    contentDescription = null
                 )
 
                 val location = if (conferenceData.city.isNotBlank()) {
@@ -98,7 +98,7 @@ fun ConferenceCard(
 
                 Text(
                     text = location,
-                    style = TextStyle(fontSize = TextUnit.Sp(12)),
+                    style = TextStyle(fontSize = 12.sp),
                     modifier = Modifier.padding(top = 2.dp)
                 )
             }
@@ -106,7 +106,6 @@ fun ConferenceCard(
             if (showCfp(conferenceData.cfpData)) {
                 val cfpData = conferenceData.cfpData!!
                 Box(Modifier.clickable(
-                    indication = rememberRipple(),
                     onClick = { context.loadUrl(cfpData.cfpUrl) }
                 )) {
                     Text(
@@ -120,7 +119,7 @@ fun ConferenceCard(
                             )
                             append(cfpData.cfpDate)
                         },
-                        style = TextStyle(fontSize = TextUnit.Sp(12)),
+                        style = TextStyle(fontSize = 12.sp),
                         modifier = Modifier.padding(top = 16.dp)
                     )
                 }

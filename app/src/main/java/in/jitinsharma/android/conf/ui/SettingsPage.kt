@@ -2,13 +2,12 @@ package `in`.jitinsharma.android.conf.ui
 
 import `in`.jitinsharma.android.conf.preferences.AppPreferences
 import `in`.jitinsharma.android.conf.utils.ThemedPreview
-import androidx.compose.material.Text
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Checkbox
 import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ripple.rememberRipple
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
@@ -34,13 +33,12 @@ fun SettingsPage() {
             color = MaterialTheme.colors.secondary
         )
         Divider(color = MaterialTheme.colors.secondary)
-        Spacer(modifier = Modifier.preferredHeight(16.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable(
-                    indication = rememberRipple(),
                     onClick = {
                         scope.launch {
                             appPreferences.setUpdatePreference(conferenceUpdateNotificationState.value.not())

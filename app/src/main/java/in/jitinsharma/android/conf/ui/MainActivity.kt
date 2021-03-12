@@ -3,9 +3,9 @@ package `in`.jitinsharma.android.conf.ui
 import `in`.jitinsharma.android.conf.viewmodel.ConferenceViewModel
 import `in`.jitinsharma.android.conf.viewmodel.FilterScreenViewModel
 import android.os.Bundle
+import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material.MaterialTheme
-import androidx.compose.ui.platform.setContent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
