@@ -76,7 +76,7 @@ fun ConferenceApp(
     }
 }
 
-private val NavController.currentRoute get() = currentDestination?.arguments?.get(KEY_ROUTE)?.defaultValue.toString()
+private val NavController.currentRoute get() = currentDestination?.route
 
 const val ConferenceListScreen = "ConferenceListScreen"
 const val SettingsScreen = "SettingsScreen"
