@@ -1,8 +1,8 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
-    ext.kotlin_version = "1.4.32"
+    ext.kotlin_version = "1.5.10"
     ext.koin_version = '2.2.1'
-    def compose_release_version = "beta07"
+    def compose_release_version = "rc01"
     ext.compose_version = "1.0.0-$compose_release_version"
     ext.compose_compiler_extension_version = "1.0.0-$compose_release_version"
 
@@ -12,7 +12,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.1.0-alpha01'
+        classpath 'com.android.tools.build:gradle:7.1.0-alpha02'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.koin:koin-gradle-plugin:$koin_version"
 
@@ -25,8 +25,8 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        jcenter()
         maven { url "https://dl.bintray.com/kotlin/kotlin-eap/" }
+        jcenter()
     }
 }
 
