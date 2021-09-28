@@ -10,7 +10,6 @@ import org.jsoup.nodes.TextNode
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
-import kotlin.collections.ArrayList
 
 class ConferenceRepositoryImpl(
     private val appDatabase: AppDatabase

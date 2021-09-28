@@ -49,11 +49,13 @@ fun ConferenceCard(
         Column(modifier = Modifier.padding(all = 16.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Box(
-                    Modifier.clickable(
-                        onClick = { context.loadUrl(conferenceData.url) })
+                    Modifier
+                        .clickable(
+                            onClick = { context.loadUrl(conferenceData.url) }
+                        )
+                        .weight(7f)
                 ) {
                     Text(
                         text = conferenceData.name,
@@ -65,7 +67,7 @@ fun ConferenceCard(
                     )
                 }
 
-                Row {
+                Row(modifier = Modifier.weight(3f)) {
                     Icon(
                         modifier = Modifier.padding(end = 4.dp),
                         painter = painterResource(id = R.drawable.ic_baseline_calendar_today),
@@ -155,6 +157,21 @@ fun ConferenceCardPreview() {
                 cfpData = ConferenceData.CfpData(
                     cfpDate = "2020-06-30"
                 )
+            )
+        )
+    }
+}
+
+@Preview
+@Composable
+fun MultiLineConferenceCardPreview() {
+    ThemedPreview {
+        ConferenceCard(
+            conferenceData = ConferenceData(
+                name = "DevCommunity Summit(Previously Android Summit)",
+                city = "Online",
+                date = "2020-10-01",
+                isActive = true,
             )
         )
     }
