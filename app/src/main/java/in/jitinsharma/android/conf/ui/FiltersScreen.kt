@@ -90,7 +90,10 @@ fun FiltersScreen(
                         }, enabled = true
                     )
             ) {
-                Row(modifier = Modifier.fillMaxWidth()) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Checkbox(
                         checked = cfpFilterCheckState.value,
                         onCheckedChange = {
@@ -103,7 +106,6 @@ fun FiltersScreen(
                     )
                     Text(
                         text = "Cfp Open",
-                        modifier = Modifier.padding(start = 8.dp, top = 2.dp),
                         color = themeColors.primary,
                         style = MaterialTheme.typography.body2
                     )
@@ -201,7 +203,8 @@ fun CountryList(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(start = 8.dp, bottom = 4.dp)
+                                .padding(start = 8.dp, bottom = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Checkbox(
                                 checked = countryChecked.value,
@@ -220,7 +223,6 @@ fun CountryList(
                             )
                             Text(
                                 text = country.name,
-                                modifier = Modifier.padding(start = 8.dp, top = 2.dp),
                                 color = themeColors.primary,
                                 style = MaterialTheme.typography.body2
                             )
