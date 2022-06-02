@@ -3,6 +3,8 @@ package `in`.jitinsharma.android.conf.repository
 import `in`.jitinsharma.android.conf.database.AppDatabase
 import `in`.jitinsharma.android.conf.model.ConferenceData
 import `in`.jitinsharma.android.conf.network.getHTMLData
+import android.text.Html
+import androidx.core.text.parseAsHtml
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import org.jsoup.nodes.Node
@@ -57,7 +59,7 @@ class ConferenceRepositoryImpl(
         conferenceDataModel.url = childNode(1).attr("href")
         val location = childNode(3).childNode(0).toString()
         val locationDataArray = location.split(",")
-        conferenceDataModel.country = locationDataArray.last().trim()
+        conferenceDataModel.country = locationDataArray.last().trim().parseAsHtml().toString()
         conferenceDataModel.city = locationDataArray.dropLast(1).run {
             if (size > 1) {
                 joinToString(",")
